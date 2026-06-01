@@ -4,16 +4,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: '#F5F3EE',
-        ink: '#1A1A18',
-        accent: '#C8B89A',
-        'accent-dark': '#8C7355',
-        muted: '#9E9B94',
-        surface: '#EDEAE3',
+        bg: '#F2EBD7',
+        ink: '#3B15D5',
+        accent: '#E8660A',
+        'accent-dark': '#C05208',
+        muted: '#6B5E45',
+        surface: '#EAE2CB',
+        lemon: '#FFF207',
       },
       fontFamily: {
-        display: ['"Playfair Display"', 'Georgia', 'serif'],
-        body: ['"DM Sans"', 'system-ui', 'sans-serif'],
+        display: ['"Tanker"', 'system-ui', 'sans-serif'],
+        body: ['"Satoshi"', 'system-ui', 'sans-serif'],
         mono: ['"DM Mono"', 'monospace'],
       },
     },

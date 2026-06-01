@@ -21,13 +21,13 @@ export default function Home() {
       transition={{ duration: 0.35 }}
     >
       {/* Hero */}
-      <section className="min-h-screen flex flex-col justify-center px-6 md:px-12 max-w-[1280px] mx-auto pt-28 pb-20">
+      <section className="min-h-screen flex flex-col justify-center items-center text-center px-6 md:px-12 max-w-[1280px] mx-auto pt-28 pb-20">
         <motion.span
           variants={fadeUp}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="font-mono text-[11px] tracking-widest uppercase text-muted mb-8 block"
         >
-          UX Designer — Jerusalem, 2025
+          UX Designer
         </motion.span>
 
         <motion.h1
@@ -38,13 +38,13 @@ export default function Home() {
         >
           Designing systems
           <br />
-          <em className="italic text-accent-dark">that feel human.</em>
+          <span className="text-accent-dark italic">that feel human.</span>
         </motion.h1>
 
         <motion.p
           variants={fadeUp}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="font-body text-lg text-muted max-w-[480px] leading-relaxed mb-12"
+          className="font-body text-lg text-[#222222] max-w-[480px] leading-relaxed mb-12"
         >
           I turn complex workflows into clear, purposeful experiences.
           <br />
@@ -57,7 +57,7 @@ export default function Home() {
         >
           <Link
             to="/work"
-            className="inline-flex items-center gap-3 font-mono text-[13px] tracking-widest uppercase text-ink border border-ink/60 px-8 py-4 rounded-full hover:bg-ink hover:text-bg hover:border-ink transition-all duration-300"
+            className="inline-flex items-center gap-3 font-mono text-[13px] tracking-widest uppercase text-ink bg-lemon px-8 py-4 rounded-full hover:bg-ink hover:text-lemon transition-all duration-300"
           >
             View Work <span>→</span>
           </Link>
