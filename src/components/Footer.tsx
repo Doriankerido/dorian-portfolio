@@ -23,7 +23,7 @@ export default function Footer() {
             Behance
           </a>
           <a
-            href="mailto:dorian@email.com"
+            href="mailto:doriankerido@gmail.com"
             className="font-mono text-xs tracking-widest uppercase text-white/40 hover:text-white transition-colors"
           >
             Email
@@ -33,7 +33,7 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-5">
           <p className="font-mono text-xs text-white/25 text-center">
-            © 2025 Dorian. All rights reserved.
+            © 2026 Dorian. All rights reserved.
           </p>
         </div>
       </div>

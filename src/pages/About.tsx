@@ -11,9 +11,9 @@ const fadeUp = {
 
 const meta = [
   { label: 'Currently', value: 'Available for new projects' },
-  { label: 'Based in', value: 'Jerusalem, Israel' },
-  { label: 'Education', value: 'UX Design, 2025' },
-  { label: 'Email', value: 'dorian@email.com', href: 'mailto:dorian@email.com' },
+  { label: 'Based in', value: 'Tel Aviv, Israel' },
+  { label: 'Education', value: 'UX Design, 2026' },
+  { label: 'Contact', value: 'Get in touch →', href: '/contact' },
 ]
 
 export default function About() {

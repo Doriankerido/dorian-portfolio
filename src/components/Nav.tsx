@@ -25,15 +25,16 @@ export default function Nav() {
       <div className="max-w-[1280px] mx-auto px-6 md:px-12 flex items-center justify-between h-16 md:h-20">
         <Link
           to="/"
-          className="font-display text-xl font-semibold text-ink tracking-tight"
+          className="font-display text-xl font-normal text-ink tracking-tight"
         >
-          Dorian
+          DORIAN KERIDO
         </Link>
 
         <nav className="hidden md:flex items-center gap-10">
           {[
             { label: 'Work', to: '/work' },
             { label: 'About', to: '/about' },
+            { label: 'Contact', to: '/contact' },
           ].map(({ label, to }) => (
             <Link
               key={label}
@@ -47,12 +48,6 @@ export default function Nav() {
               {label}
             </Link>
           ))}
-          <a
-            href="mailto:dorian@email.com"
-            className="font-mono text-[13px] tracking-widest uppercase text-ink hover:text-accent-dark transition-colors"
-          >
-            Contact
-          </a>
         </nav>
 
         <button
@@ -86,9 +81,9 @@ export default function Nav() {
           <Link to="/about" className="font-mono text-sm tracking-widest uppercase text-ink py-2">
             About
           </Link>
-          <a href="mailto:dorian@email.com" className="font-mono text-sm tracking-widest uppercase text-ink py-2">
+          <Link to="/contact" className="font-mono text-sm tracking-widest uppercase text-ink py-2">
             Contact
-          </a>
+          </Link>
         </div>
       )}
     </header>

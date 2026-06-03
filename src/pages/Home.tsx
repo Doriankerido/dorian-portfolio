@@ -33,12 +33,12 @@ export default function Home() {
         <motion.h1
           variants={fadeUp}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="font-display font-semibold text-ink leading-[1.04] mb-8"
+          className="font-display font-normal text-ink leading-[1.04] mb-8"
           style={{ fontSize: 'clamp(3rem, 7vw, 7rem)' }}
         >
           Designing systems
           <br />
-          <span className="text-accent-dark italic">that feel human.</span>
+          <span className="text-accent-dark italic font-light">that feel human.</span>
         </motion.h1>
 
         <motion.p
@@ -96,7 +96,8 @@ export default function Home() {
               title="Skid"
               description="AI-powered scheduling platform for photography production teams — 46-screen Figma system, graduated with distinction."
               tags={['UX Design', 'Product', 'Research']}
-              image="/images/skid/skid-planning.png"
+              cardColor="#3B15D5"
+              textColor="#FFF207"
               href="/work/skid"
             />
           </motion.div>
@@ -105,10 +106,11 @@ export default function Home() {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
             <ProjectCard
-              title="Next Project"
-              description="New case study in progress. Check back soon."
+              title="In Progress"
+              description="New project coming soon."
               tags={['UX Design']}
-              image=""
+              cardColor="#EAE2CB"
+              textColor="#9B8E72"
               href="#"
               isPlaceholder
             />

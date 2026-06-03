@@ -65,7 +65,7 @@ export default function SkidCaseStudy() {
       <section className="pt-36 pb-16 px-6 md:px-12 max-w-[1280px] mx-auto">
         <motion.div variants={stagger} initial="initial" animate="animate">
           <motion.span variants={fadeUp} className="font-mono text-[11px] tracking-widest uppercase text-muted block mb-6">
-            Graduation Project · 2025
+            Graduation Project · 2026
           </motion.span>
 
           <motion.h1
@@ -84,6 +84,17 @@ export default function SkidCaseStudy() {
             AI-Powered Scheduling System for Photography Production Teams
           </motion.p>
 
+          <motion.div variants={fadeUp} className="mb-10">
+            <a
+              href="https://www.figma.com/proto/fKbhiRcvtv96cHwhv19RTw/Dorian-Skid-Gmar?node-id=766-11757&p=f&viewport=201%2C3088%2C0.3&t=U8ZOUdZTh4Qs41IZ-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=766%3A11757&show-proto-sidebar=1&page-id=654%3A18035"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 font-mono text-[13px] tracking-widest uppercase bg-lemon text-ink px-8 py-4 rounded-full hover:bg-ink hover:text-lemon transition-all duration-300"
+            >
+              View Prototype <span>↗</span>
+            </a>
+          </motion.div>
+
           <motion.div
             variants={fadeUp}
             className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-6 border-t border-b border-accent/30 py-8"
@@ -91,7 +102,7 @@ export default function SkidCaseStudy() {
             {[
               { label: 'Type', value: 'Academic Graduation Project' },
               { label: 'Role', value: 'Lead Product Designer' },
-              { label: 'Duration', value: '3 months · 2025' },
+              { label: 'Duration', value: '3 months · 2026' },
               { label: 'Tools', value: 'Figma · User Research · Prototyping' },
             ].map(({ label, value }) => (
               <div key={label}>
@@ -177,7 +188,7 @@ export default function SkidCaseStudy() {
                   {step.num}
                 </span>
                 <div className="pt-1">
-                  <h3 className="font-display text-xl md:text-2xl font-semibold text-ink mb-3 leading-tight">
+                  <h3 className="font-display text-xl md:text-2xl font-normal text-ink mb-3 leading-tight">
                     {step.title}
                   </h3>
                   <p className="font-body text-base md:text-lg text-muted leading-relaxed max-w-[560px]">

@@ -5,8 +5,9 @@ interface ProjectCardProps {
   title: string
   description: string
   tags: string[]
-  image: string
   href: string
+  cardColor: string
+  textColor?: string
   isPlaceholder?: boolean
 }
 
@@ -14,46 +15,41 @@ export default function ProjectCard({
   title,
   description,
   tags,
-  image,
   href,
+  cardColor,
+  textColor = '#FFFFFF',
   isPlaceholder,
 }: ProjectCardProps) {
   const content = (
     <motion.div
-      className="group relative overflow-hidden rounded-xl bg-surface cursor-pointer"
-      whileHover={{ y: -6, boxShadow: '0 24px 64px rgba(26,26,24,0.12)' }}
+      className={`group relative overflow-hidden rounded-xl ${isPlaceholder ? 'opacity-50 cursor-default' : 'cursor-pointer'}`}
+      whileHover={isPlaceholder ? {} : { y: -6, boxShadow: '0 24px 64px rgba(26,26,24,0.14)' }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
     >
-      <div className="relative overflow-hidden" style={{ aspectRatio: '16/9' }}>
-        {isPlaceholder ? (
-          <div className="w-full h-full bg-surface flex items-center justify-center">
-            <span className="font-mono text-xs text-muted tracking-widest uppercase">
-              Coming Soon
-            </span>
-          </div>
-        ) : (
-          <motion.img
-            src={image}
-            alt={title}
-            className="w-full h-full object-cover"
-            whileHover={{ scale: 1.03 }}
-            transition={{ duration: 0.45, ease: 'easeOut' }}
-          />
+      {/* Colour block with centred title */}
+      <div
+        className="relative flex items-center justify-center"
+        style={{ aspectRatio: '16/9', background: cardColor }}
+      >
+        <span
+          className="font-display font-normal select-none px-6 text-center leading-none"
+          style={{
+            fontSize: 'clamp(2.5rem, 5vw, 5rem)',
+            color: textColor,
+          }}
+        >
+          {title}
+        </span>
+        {!isPlaceholder && (
+          <span className="absolute top-5 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-2xl" style={{ color: textColor }}>
+            →
+          </span>
         )}
       </div>
 
-      <div className="p-6 md:p-8">
-        <div className="flex items-start justify-between gap-4 mb-4">
-          <div>
-            <h3 className="font-display text-xl font-semibold text-ink mb-2 leading-snug">
-              {title}
-            </h3>
-            <p className="font-body text-sm text-muted leading-relaxed">{description}</p>
-          </div>
-          <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-accent-dark text-2xl shrink-0 mt-0.5">
-            →
-          </span>
-        </div>
+      {/* Card body */}
+      <div className="p-6 md:p-8 bg-surface">
+        <p className="font-body text-base text-muted leading-relaxed mb-4">{description}</p>
         <div className="flex flex-wrap gap-2">
           {tags.map((tag) => (
             <span
