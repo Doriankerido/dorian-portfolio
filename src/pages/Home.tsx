@@ -38,7 +38,7 @@ export default function Home() {
         >
           Designing systems
           <br />
-          <span className="text-accent-dark italic font-light">that feel human.</span>
+          <span className="text-accent-dark italic" style={{ fontWeight: 100 }}>that feel human.</span>
         </motion.h1>
 
         <motion.p
