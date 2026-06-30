@@ -30,7 +30,7 @@ export default function About() {
         variants={fadeUp}
         initial="initial"
         animate="animate"
-        className="font-mono text-[11px] tracking-widest uppercase text-muted block mb-6"
+        className="font-mono text-[16px] tracking-widest uppercase text-muted block mb-6"
       >
         About
       </motion.span>
@@ -83,18 +83,18 @@ export default function About() {
               initial="initial"
               animate="animate"
             >
-              <span className="font-mono text-[10px] tracking-widest uppercase text-muted block mb-1.5">
+              <span className="font-mono text-[16px] tracking-widest uppercase text-muted block mb-1.5">
                 {label}
               </span>
               {href ? (
                 <a
                   href={href}
-                  className="font-body text-sm text-ink hover:text-accent-dark transition-colors underline underline-offset-2"
+                  className="font-body text-base text-ink hover:text-accent-dark transition-colors underline underline-offset-2"
                 >
                   {value}
                 </a>
               ) : (
-                <span className="font-body text-sm text-ink">{value}</span>
+                <span className="font-body text-base text-ink">{value}</span>
               )}
             </motion.div>
           ))}

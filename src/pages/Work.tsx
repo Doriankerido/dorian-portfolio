@@ -6,7 +6,7 @@ const projects = [
   {
     title: 'Skid',
     description:
-      'AI-powered scheduling platform for photography production teams — dual-view interface, 46 screens, graduated with distinction.',
+      'Scheduling management platform for photography production teams with AI-assisted capabilities — dual-view interface, 46 screens, graduated with distinction.',
     tags: ['UX Design', 'Product', 'Research'],
     cardColor: '#3B15D5',
     textColor: '#FFF207',
@@ -40,7 +40,7 @@ export default function Work() {
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className="min-h-screen pt-36 pb-32 px-6 md:px-12 max-w-[1280px] mx-auto"
     >
-      <span className="font-mono text-[11px] tracking-widest uppercase text-muted block mb-6">
+      <span className="font-mono text-[16px] tracking-widest uppercase text-muted block mb-6">
         Work
       </span>
       <h1
@@ -55,7 +55,7 @@ export default function Work() {
           <button
             key={tag}
             onClick={() => setActive(tag)}
-            className={`font-mono text-[11px] tracking-widest uppercase px-5 py-2.5 rounded-full border transition-all duration-200 ${
+            className={`font-mono text-[16px] tracking-widest uppercase px-5 py-2.5 rounded-full border transition-all duration-200 ${
               active === tag
                 ? 'bg-ink text-bg border-ink'
                 : 'border-ink/25 text-ink hover:border-ink'

@@ -25,7 +25,7 @@ export default function Home() {
         <motion.span
           variants={fadeUp}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="font-mono text-[11px] tracking-widest uppercase text-muted mb-8 block"
+          className="font-mono text-[16px] tracking-widest uppercase text-muted mb-8 block"
         >
           UX Designer
         </motion.span>
@@ -57,7 +57,7 @@ export default function Home() {
         >
           <Link
             to="/work"
-            className="inline-flex items-center gap-3 font-mono text-[13px] tracking-widest uppercase text-ink bg-lemon px-8 py-4 rounded-full hover:bg-ink hover:text-lemon transition-all duration-300"
+            className="inline-flex items-center gap-3 font-mono text-[16px] tracking-widest uppercase text-ink bg-lemon px-8 py-4 rounded-full hover:bg-ink hover:text-lemon transition-all duration-300"
           >
             View Work <span>→</span>
           </Link>
@@ -70,14 +70,14 @@ export default function Home() {
           <motion.span
             variants={fadeUp}
             transition={{ duration: 0.5 }}
-            className="font-mono text-[11px] tracking-widest uppercase text-muted"
+            className="font-mono text-[16px] tracking-widest uppercase text-muted"
           >
             Selected Works
           </motion.span>
           <motion.div variants={fadeUp} transition={{ duration: 0.5 }}>
             <Link
               to="/work"
-              className="font-mono text-[11px] tracking-widest uppercase text-accent-dark hover:text-ink transition-colors"
+              className="font-mono text-[16px] tracking-widest uppercase text-accent-dark hover:text-ink transition-colors"
             >
               All Projects →
             </Link>
@@ -94,7 +94,7 @@ export default function Home() {
           >
             <ProjectCard
               title="Skid"
-              description="AI-powered scheduling platform for photography production teams — 46-screen Figma system, graduated with distinction."
+              description="Scheduling management platform for photography production teams with AI-assisted capabilities — 46-screen Figma system, graduated with distinction."
               tags={['UX Design', 'Product', 'Research']}
               cardColor="#3B15D5"
               textColor="#FFF207"

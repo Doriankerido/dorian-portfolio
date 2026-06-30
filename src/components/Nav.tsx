@@ -39,7 +39,7 @@ export default function Nav() {
             <Link
               key={label}
               to={to}
-              className={`font-mono text-[13px] tracking-widest uppercase transition-colors ${
+              className={`font-mono text-[16px] tracking-widest uppercase transition-colors ${
                 location.pathname.startsWith(to)
                   ? 'text-accent-dark'
                   : 'text-ink hover:text-accent-dark'
@@ -75,13 +75,13 @@ export default function Nav() {
 
       {menuOpen && (
         <div className="md:hidden bg-[rgba(245,243,238,0.97)] backdrop-blur-[12px] border-b border-surface px-6 pb-8 pt-2 flex flex-col gap-6">
-          <Link to="/work" className="font-mono text-sm tracking-widest uppercase text-ink py-2">
+          <Link to="/work" className="font-mono text-base tracking-widest uppercase text-ink py-2">
             Work
           </Link>
-          <Link to="/about" className="font-mono text-sm tracking-widest uppercase text-ink py-2">
+          <Link to="/about" className="font-mono text-base tracking-widest uppercase text-ink py-2">
             About
           </Link>
-          <Link to="/contact" className="font-mono text-sm tracking-widest uppercase text-ink py-2">
+          <Link to="/contact" className="font-mono text-base tracking-widest uppercase text-ink py-2">
             Contact
           </Link>
         </div>

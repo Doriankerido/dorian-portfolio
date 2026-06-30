@@ -19,7 +19,7 @@ const approach = [
   {
     num: '02',
     title: 'User Definition',
-    body: 'Defined three core user types — scheduling operators, photographers, and managers — and built separate user journey maps for each.',
+    body: 'Defined three core user types — coordination managers, photographers, and venue owners — and built separate user journey maps for each.',
   },
   {
     num: '03',
@@ -38,20 +38,6 @@ const approach = [
   },
 ]
 
-const stats = [
-  {
-    stat: '73%',
-    desc: 'reduction in scheduling errors vs. previous spreadsheet workflow',
-  },
-  {
-    stat: '< 5 min',
-    desc: 'to complete weekly visit assignments (down from ~25 min)',
-  },
-  {
-    stat: 'SUS 84',
-    desc: 'System Usability Scale score — rated "Excellent" by all testers',
-  },
-]
 
 export default function SkidCaseStudy() {
   return (
@@ -64,7 +50,7 @@ export default function SkidCaseStudy() {
       {/* Header */}
       <section className="pt-36 pb-16 px-6 md:px-12 max-w-[1280px] mx-auto">
         <motion.div variants={stagger} initial="initial" animate="animate">
-          <motion.span variants={fadeUp} className="font-mono text-[11px] tracking-widest uppercase text-muted block mb-6">
+          <motion.span variants={fadeUp} className="font-mono text-[16px] tracking-widest uppercase text-muted block mb-6">
             Graduation Project · 2026
           </motion.span>
 
@@ -81,7 +67,7 @@ export default function SkidCaseStudy() {
             className="font-body text-muted max-w-[600px] leading-snug mb-14"
             style={{ fontSize: 'clamp(1.1rem, 2vw, 1.35rem)' }}
           >
-            AI-Powered Scheduling System for Photography Production Teams
+            Scheduling Management System with AI Capabilities for Photography Production Teams
           </motion.p>
 
           <motion.div variants={fadeUp} className="mb-10">
@@ -89,7 +75,7 @@ export default function SkidCaseStudy() {
               href="https://www.figma.com/proto/fKbhiRcvtv96cHwhv19RTw/Dorian-Skid-Gmar?node-id=766-11757&p=f&viewport=201%2C3088%2C0.3&t=U8ZOUdZTh4Qs41IZ-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=766%3A11757&show-proto-sidebar=1&page-id=654%3A18035"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 font-mono text-[13px] tracking-widest uppercase bg-lemon text-ink px-8 py-4 rounded-full hover:bg-ink hover:text-lemon transition-all duration-300"
+              className="inline-flex items-center gap-3 font-mono text-[16px] tracking-widest uppercase bg-lemon text-ink px-8 py-4 rounded-full hover:bg-ink hover:text-lemon transition-all duration-300"
             >
               View Prototype <span>↗</span>
             </a>
@@ -106,10 +92,10 @@ export default function SkidCaseStudy() {
               { label: 'Tools', value: 'Figma · User Research · Prototyping' },
             ].map(({ label, value }) => (
               <div key={label}>
-                <span className="font-mono text-[10px] tracking-widest uppercase text-muted block mb-1.5">
+                <span className="font-mono text-[16px] tracking-widest uppercase text-muted block mb-1.5">
                   {label}
                 </span>
-                <span className="font-body text-sm text-ink leading-snug">{value}</span>
+                <span className="font-body text-base text-ink leading-snug">{value}</span>
               </div>
             ))}
           </motion.div>
@@ -121,10 +107,8 @@ export default function SkidCaseStudy() {
         <img
           src="/images/skid/skid-planning.png"
           alt="Skid planning interface — dual-view table and calendar"
-          className="w-full rounded-2xl object-cover shadow-2xl"
+          className="w-full rounded-2xl shadow-2xl"
           style={{
-            maxHeight: '620px',
-            objectFit: 'cover',
             border: '1px solid rgba(200,184,154,0.15)',
           }}
         />
@@ -133,18 +117,18 @@ export default function SkidCaseStudy() {
       {/* Overview */}
       <section className="px-6 md:px-12 max-w-[1280px] mx-auto mb-28">
         <div className="grid md:grid-cols-[200px,1fr] gap-12 md:gap-20">
-          <span className="font-mono text-[11px] tracking-widest uppercase text-muted mt-1 md:text-right">
+          <span className="font-mono text-[16px] tracking-widest uppercase text-muted mt-1 md:text-right">
             Overview
           </span>
           <div className="max-w-[680px]">
             <p className="font-body text-ink leading-relaxed mb-5" style={{ fontSize: 'clamp(1rem, 1.3vw, 1.15rem)' }}>
-              Skid is an AI-powered scheduling platform built for photography production teams.
+              Skid is a scheduling management platform built for photography production teams, with AI-assisted capabilities.
               The core challenge was designing a system that coordinates photographers, venues,
               and shoot dates at scale — while keeping the experience simple for operators
               managing dozens of concurrent bookings.
             </p>
             <p className="font-body text-ink leading-relaxed" style={{ fontSize: 'clamp(1rem, 1.3vw, 1.15rem)' }}>
-              The result is a dual-view interface — table and calendar — built across 46 screens in Figma.
+              The result is a dual-view interface — table and calendar — that handles complex scheduling in one click, with full manual control at every step.
             </p>
           </div>
         </div>
@@ -153,7 +137,7 @@ export default function SkidCaseStudy() {
       {/* Challenge */}
       <section className="px-6 md:px-12 max-w-[1280px] mx-auto mb-28">
         <div className="grid md:grid-cols-[200px,1fr] gap-12 md:gap-20">
-          <span className="font-mono text-[11px] tracking-widest uppercase text-muted mt-1 md:text-right">
+          <span className="font-mono text-[16px] tracking-widest uppercase text-muted mt-1 md:text-right">
             Challenge
           </span>
           <div className="max-w-[680px]">
@@ -172,7 +156,7 @@ export default function SkidCaseStudy() {
       {/* Approach */}
       <section className="bg-surface py-24 mb-28">
         <div className="px-6 md:px-12 max-w-[1280px] mx-auto">
-          <span className="font-mono text-[11px] tracking-widest uppercase text-muted block mb-14">
+          <span className="font-mono text-[16px] tracking-widest uppercase text-muted block mb-14">
             Approach
           </span>
           <div>
@@ -203,7 +187,7 @@ export default function SkidCaseStudy() {
 
       {/* Solution */}
       <section className="px-6 md:px-12 max-w-[1280px] mx-auto mb-8">
-        <span className="font-mono text-[11px] tracking-widest uppercase text-muted block mb-10">
+        <span className="font-mono text-[16px] tracking-widest uppercase text-muted block mb-10">
           Solution
         </span>
         <div className="max-w-[680px] mb-14">
@@ -233,74 +217,16 @@ export default function SkidCaseStudy() {
             style={{ border: '1px solid rgba(200,184,154,0.2)' }}
           />
         </div>
-        <p className="font-mono text-[10px] tracking-widest uppercase text-muted text-center mb-28">
+        <p className="font-mono text-[16px] tracking-widest uppercase text-muted text-center mb-28">
           Dual-view interface — table and calendar sync in real time
         </p>
-      </section>
-
-      {/* Detail — Venue Card */}
-      <section className="px-6 md:px-12 max-w-[1280px] mx-auto mb-28">
-        <span className="font-mono text-[11px] tracking-widest uppercase text-muted block mb-12">
-          Detail
-        </span>
-        <div className="grid md:grid-cols-[1fr,360px] gap-12 md:gap-20 items-center">
-          <img
-            src="/images/skid/skid-venue-card.png"
-            alt="Skid venue detail card — Guy Shapira / The Rustic Mill"
-            className="w-full rounded-2xl shadow-2xl object-contain"
-            style={{
-              border: '1px solid rgba(200,184,154,0.2)',
-              background: '#f5f3ee',
-              padding: '2rem',
-            }}
-          />
-          <div>
-            <h3
-              className="font-display font-semibold text-ink mb-6 leading-snug"
-              style={{ fontSize: 'clamp(1.4rem, 2.2vw, 2rem)' }}
-            >
-              Venue detail card — photographer assignment, status, and shootlist in one view
-            </h3>
-            <p className="font-body text-base md:text-lg text-muted leading-relaxed">
-              Every venue card surfaces the right information at the right moment —
-              photographer assignment, onboarding status, contact details, and attached
-              shootlist — without requiring operators to navigate away from their workflow.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Results */}
-      <section className="bg-surface py-24 mb-0">
-        <div className="px-6 md:px-12 max-w-[1280px] mx-auto">
-          <span className="font-mono text-[11px] tracking-widest uppercase text-muted block mb-14">
-            Results
-          </span>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-14">
-            {stats.map(({ stat, desc }) => (
-              <div key={stat} className="bg-bg rounded-2xl p-8 md:p-10">
-                <span
-                  className="font-display font-semibold text-ink leading-none block mb-4"
-                  style={{ fontSize: 'clamp(2.5rem, 3.5vw, 3.8rem)' }}
-                >
-                  {stat}
-                </span>
-                <p className="font-body text-sm text-muted leading-relaxed">{desc}</p>
-              </div>
-            ))}
-          </div>
-          <p className="font-body text-base md:text-lg text-muted max-w-[520px]">
-            Graduated with distinction. The project was selected as a showcase piece by
-            the program faculty.
-          </p>
-        </div>
       </section>
 
       {/* Next Project */}
       <Link to="/work" className="block bg-ink group">
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 flex items-center justify-between">
           <div>
-            <span className="font-mono text-[10px] tracking-widest uppercase text-white/35 block mb-3">
+            <span className="font-mono text-[16px] tracking-widest uppercase text-white/35 block mb-3">
               Next Project →
             </span>
             <span

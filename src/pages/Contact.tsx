@@ -50,7 +50,7 @@ export default function Contact() {
         variants={fadeUp}
         initial="initial"
         animate="animate"
-        className="font-mono text-[11px] tracking-widest uppercase text-muted block mb-6"
+        className="font-mono text-[16px] tracking-widest uppercase text-muted block mb-6"
       >
         Contact
       </motion.span>
@@ -91,7 +91,7 @@ export default function Contact() {
             className="group flex items-center justify-between bg-surface hover:bg-accent hover:text-white transition-all duration-300 rounded-2xl px-7 py-6"
           >
             <div>
-              <span className="font-mono text-[10px] tracking-widest uppercase text-muted group-hover:text-white/60 transition-colors block mb-1">
+              <span className="font-mono text-[16px] tracking-widest uppercase text-muted group-hover:text-white/60 transition-colors block mb-1">
                 {label}
               </span>
               <span className="font-body text-base font-medium text-ink group-hover:text-white transition-colors">
