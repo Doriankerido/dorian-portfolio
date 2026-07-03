@@ -10,34 +10,32 @@ const stagger = {
   animate: { transition: { staggerChildren: 0.1 } },
 }
 
-const approach = [
+const solutions = [
   {
     num: '01',
-    title: 'Discovery',
-    body: 'Mapped the end-to-end scheduling workflow through stakeholder interviews and competitive analysis to identify key pain points in existing systems.',
+    title: 'Onboarding',
+    body: 'Confirms the details that most often go wrong — correct address, correct point of contact — and sends that contact a short video showing exactly how to prepare the space before the shoot.',
+    img: null,
   },
   {
     num: '02',
-    title: 'User Definition',
-    body: 'Defined three core user types — coordination managers, photographers, and venue owners — and built separate user journey maps for each.',
+    title: 'Photographer Hub',
+    body: 'Centralizes invoicing, shoot history, and recurring issues per photographer, and defines each photographer\'s working zones and business-type preferences — so future assignments are matched automatically instead of guessed at.',
+    img: null,
   },
   {
     num: '03',
-    title: 'Wireframing',
-    body: 'Designed and iterated on low-fi wireframes for the dual-view system (table + calendar), testing both with users to validate clarity and task completion.',
+    title: 'Auto-Assign',
+    body: 'Photographers mark specific days as flexible; the system distributes those slots to restaurants automatically by urgency — closer to a walk-in queue than a fixed calendar. Scoped for larger, higher-complexity restaurants first.',
+    img: { src: '/images/skid/skid-scheduled.png', alt: 'Skid — Auto-assign scheduling view' },
   },
   {
     num: '04',
-    title: 'Design System',
-    body: 'Built a component-based design system in Figma covering tables, calendar cards, status badges, and navigation — ensuring consistency across all 46 screens.',
-  },
-  {
-    num: '05',
-    title: 'Testing & Handoff',
-    body: 'Conducted usability testing sessions on the high-fidelity prototype, refined based on feedback, and delivered final specs ready for development handoff.',
+    title: 'Cancellations',
+    body: 'A dedicated hub replacing scattered chats — surfacing at-risk slots and notifying the right people immediately, instead of a scramble across threads.',
+    img: { src: '/images/skid/skid-attention-required.png', alt: 'Skid — Cancellations and attention required view' },
   },
 ]
-
 
 export default function SkidCaseStudy() {
   return (
@@ -67,7 +65,7 @@ export default function SkidCaseStudy() {
             className="font-body text-muted max-w-[600px] leading-snug mb-14"
             style={{ fontSize: 'clamp(1.1rem, 2vw, 1.35rem)' }}
           >
-            Scheduling Management System with AI Capabilities for Photography Production Teams
+            Operations Platform — Food Photography Logistics
           </motion.p>
 
           <motion.div variants={fadeUp} className="mb-10">
@@ -87,7 +85,7 @@ export default function SkidCaseStudy() {
           >
             {[
               { label: 'Type', value: 'Academic Graduation Project' },
-              { label: 'Role', value: 'Lead Product Designer' },
+              { label: 'Role', value: 'Product Designer' },
               { label: 'Duration', value: '3 months · 2026' },
               { label: 'Tools', value: 'Figma · User Research · Prototyping' },
             ].map(({ label, value }) => (
@@ -122,104 +120,114 @@ export default function SkidCaseStudy() {
           </span>
           <div className="max-w-[680px]">
             <p className="font-body text-ink leading-relaxed mb-5" style={{ fontSize: 'clamp(1rem, 1.3vw, 1.15rem)' }}>
-              Skid is a scheduling management platform built for photography production teams, with AI-assisted capabilities.
-              The core challenge was designing a system that coordinates photographers, venues,
-              and shoot dates at scale — while keeping the experience simple for operators
-              managing dozens of concurrent bookings.
+              Skid coordinates food photography shoots for restaurants listed on Wolt.
+              A small internal team manages the process — matching photographers with restaurants,
+              tracking photographer payments and no-shows — mostly through chats, spreadsheets,
+              and manual lists.
             </p>
             <p className="font-body text-ink leading-relaxed" style={{ fontSize: 'clamp(1rem, 1.3vw, 1.15rem)' }}>
-              The result is a dual-view interface — table and calendar — that handles complex scheduling in one click, with full manual control at every step.
+              Skid brings that coordination into one connected system.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Challenge */}
+      {/* Challenges */}
       <section className="px-6 md:px-12 max-w-[1280px] mx-auto mb-28">
         <div className="grid md:grid-cols-[200px,1fr] gap-12 md:gap-20">
           <span className="font-mono text-[16px] tracking-widest uppercase text-muted mt-1 md:text-right">
-            Challenge
+            Challenges
           </span>
           <div className="max-w-[680px]">
-            <p className="font-body text-ink leading-relaxed mb-5" style={{ fontSize: 'clamp(1rem, 1.3vw, 1.15rem)' }}>
-              Scheduling in photography production is managed through a tangled mix of spreadsheets,
-              WhatsApp groups, and manual tracking. Operators juggle dozens of venues, photographers,
-              and shoot dates simultaneously — with no single source of truth.
-            </p>
+            <h2 className="font-display font-normal text-ink mb-6 leading-tight" style={{ fontSize: 'clamp(1.5rem, 2.5vw, 2.2rem)' }}>
+              Everyone shows up unprepared
+            </h2>
             <p className="font-body text-ink leading-relaxed" style={{ fontSize: 'clamp(1rem, 1.3vw, 1.15rem)' }}>
-              The brief: design a system that brings clarity to this chaos, built for speed and scale.
+              A shoot only works when the restaurant, the photographer, and the internal team are
+              all aligned — and today none of that is guaranteed. Restaurants don't know what to
+              expect. Photographers arrive to changed menus with no one on site. Cancellations and
+              payment issues fall through the cracks with no single place to catch them.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Approach */}
+      {/* Research */}
       <section className="bg-surface py-24 mb-28">
         <div className="px-6 md:px-12 max-w-[1280px] mx-auto">
-          <span className="font-mono text-[16px] tracking-widest uppercase text-muted block mb-14">
-            Approach
-          </span>
-          <div>
-            {approach.map((step, i) => (
-              <div
-                key={step.num}
-                className={`flex gap-8 md:gap-16 py-10 ${i < approach.length - 1 ? 'border-b border-accent/25' : ''}`}
-              >
+          <div className="grid md:grid-cols-[200px,1fr] gap-12 md:gap-20">
+            <span className="font-mono text-[16px] tracking-widest uppercase text-muted mt-1 md:text-right">
+              Research
+            </span>
+            <div className="max-w-[680px]">
+              <h2 className="font-display font-normal text-ink mb-6 leading-tight" style={{ fontSize: 'clamp(1.5rem, 2.5vw, 2.2rem)' }}>
+                Listening to both ends of the shoot
+              </h2>
+              <p className="font-body text-ink leading-relaxed" style={{ fontSize: 'clamp(1rem, 1.3vw, 1.15rem)' }}>
+                I interviewed scheduling coordinators, team leads, and freelance photographers
+                to find out where it actually breaks. One issue came up in every single interview:
+                restaurants are never truly ready when the photographer arrives — the clearest, most
+                validated signal in the research. Three more recurring pains followed: unclear payment
+                status, rigid scheduling windows, and cancellations with no real tools to manage them.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Solutions */}
+      <section className="px-6 md:px-12 max-w-[1280px] mx-auto mb-28">
+        <span className="font-mono text-[16px] tracking-widest uppercase text-muted block mb-4">
+          Solutions
+        </span>
+        <h2 className="font-display font-normal text-ink mb-20 leading-tight" style={{ fontSize: 'clamp(1.5rem, 2.5vw, 2.2rem)' }}>
+          One system, four entry points
+        </h2>
+
+        <div className="space-y-28">
+          {solutions.map((s, i) => (
+            <div key={s.num} className={`${i < solutions.length - 1 ? 'pb-28 border-b border-accent/20' : ''}`}>
+              <div className="flex gap-8 md:gap-16 mb-10">
                 <span
                   className="font-display font-semibold text-accent/50 leading-none shrink-0 select-none"
                   style={{ fontSize: 'clamp(2.5rem, 4vw, 4.5rem)', width: '4.5rem' }}
                 >
-                  {step.num}
+                  {s.num}
                 </span>
-                <div className="pt-1">
-                  <h3 className="font-display text-xl md:text-2xl font-normal text-ink mb-3 leading-tight">
-                    {step.title}
+                <div className="pt-1 max-w-[580px]">
+                  <h3 className="font-display text-2xl md:text-3xl font-normal text-ink mb-4 leading-tight">
+                    {s.title}
                   </h3>
-                  <p className="font-body text-base md:text-lg text-muted leading-relaxed max-w-[560px]">
-                    {step.body}
+                  <p className="font-body text-base md:text-lg text-muted leading-relaxed">
+                    {s.body}
                   </p>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* Solution */}
-      <section className="px-6 md:px-12 max-w-[1280px] mx-auto mb-8">
-        <span className="font-mono text-[16px] tracking-widest uppercase text-muted block mb-10">
-          Solution
-        </span>
-        <div className="max-w-[680px] mb-14">
-          <p className="font-body text-ink leading-relaxed mb-5" style={{ fontSize: 'clamp(1rem, 1.3vw, 1.15rem)' }}>
-            Skid delivers a unified scheduling dashboard where operators can manage the full
-            production pipeline — from initial venue onboarding to completed shoots.
-          </p>
-          <p className="font-body text-ink leading-relaxed" style={{ fontSize: 'clamp(1rem, 1.3vw, 1.15rem)' }}>
-            The table view gives a structured overview of all pending and planned visits, while
-            the calendar view surfaces weekly photographer assignments at a glance. Status badges,
-            avatar-coded photographers, and collapsible task sections make complex coordination
-            instantly readable.
-          </p>
+              {s.img ? (
+                <img
+                  src={s.img.src}
+                  alt={s.img.alt}
+                  className="w-full rounded-2xl shadow-xl"
+                  style={{ border: '1px solid rgba(200,184,154,0.2)' }}
+                />
+              ) : (
+                <div
+                  className="w-full rounded-2xl flex items-center justify-center"
+                  style={{
+                    aspectRatio: '16/7',
+                    border: '1.5px dashed rgba(59,21,213,0.15)',
+                    background: 'rgba(59,21,213,0.03)',
+                  }}
+                >
+                  <span className="font-mono text-[16px] tracking-widest uppercase text-muted/50">
+                    Screenshot coming soon
+                  </span>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
-
-        <div className="grid md:grid-cols-2 gap-5 mb-5">
-          <img
-            src="/images/skid/skid-scheduled.png"
-            alt="Skid — Scheduled tab with table and calendar"
-            className="w-full rounded-xl object-cover shadow-xl"
-            style={{ border: '1px solid rgba(200,184,154,0.2)' }}
-          />
-          <img
-            src="/images/skid/skid-attention-required.png"
-            alt="Skid — Attention Required tab"
-            className="w-full rounded-xl object-cover shadow-xl"
-            style={{ border: '1px solid rgba(200,184,154,0.2)' }}
-          />
-        </div>
-        <p className="font-mono text-[16px] tracking-widest uppercase text-muted text-center mb-28">
-          Dual-view interface — table and calendar sync in real time
-        </p>
       </section>
 
       {/* Next Project */}
