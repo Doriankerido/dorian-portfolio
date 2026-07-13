@@ -62,13 +62,13 @@ export default function SkidCaseStudy() {
 
           <motion.p
             variants={fadeUp}
-            className="font-body text-muted max-w-[600px] leading-snug mb-14"
+            className="font-body text-muted max-w-[600px] leading-snug mb-6"
             style={{ fontSize: 'clamp(1.1rem, 2vw, 1.35rem)' }}
           >
             Operations Platform — Food Photography Logistics
           </motion.p>
 
-          <motion.div variants={fadeUp} className="mb-10">
+          <motion.div variants={fadeUp} className="flex justify-end mb-6">
             <a
               href="https://www.figma.com/proto/fKbhiRcvtv96cHwhv19RTw/Dorian-Skid-Gmar?node-id=766-11757&p=f&viewport=201%2C3088%2C0.3&t=U8ZOUdZTh4Qs41IZ-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=766%3A11757&show-proto-sidebar=1&page-id=654%3A18035"
               target="_blank"

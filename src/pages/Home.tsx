@@ -22,23 +22,15 @@ export default function Home() {
     >
       {/* Hero */}
       <section className="min-h-screen flex flex-col justify-center items-center text-center px-6 md:px-12 max-w-[1280px] mx-auto pt-28 pb-20">
-        <motion.span
-          variants={fadeUp}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="font-mono text-[16px] tracking-widest uppercase text-muted mb-8 block"
-        >
-          UX Designer
-        </motion.span>
-
         <motion.h1
           variants={fadeUp}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="font-display font-normal text-ink leading-[1.04] mb-8"
           style={{ fontSize: 'clamp(3rem, 7vw, 7rem)' }}
         >
-          Designing systems
+          Hi, I'm Dorian Kerido.
           <br />
-          <span className="text-accent-dark italic" style={{ fontWeight: 100 }}>that feel human.</span>
+          <span className="text-accent-dark italic" style={{ fontWeight: 100 }}>I'm a UX designer.</span>
         </motion.h1>
 
         <motion.p
