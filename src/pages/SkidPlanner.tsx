@@ -97,33 +97,49 @@ const reveal = {
 
 export default function SkidPlanner() {
   // Slide-by-slide scrolling on large screens: one scroll gesture moves exactly one slide, in every browser.
-  // CSS snapping (index.css, .snap-slides) stays as the fallback for keyboard and touch.
+  // CSS snapping (index.css, .snap-slides) stays as the fallback for keyboard and touch. Slide mode switches
+  // itself off whenever a slide would not fit the window, so content is never unreachable.
   useEffect(() => {
     const html = document.documentElement
-    html.classList.add('snap-slides')
-
     const desktop = window.matchMedia('(min-width: 1024px) and (min-height: 640px)')
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
-    let lockedUntil = 0
+    const slides = () => Array.from(document.querySelectorAll<HTMLElement>('.slide'))
+
+    const sync = () => {
+      const fits = slides().every((el) => el.offsetHeight <= window.innerHeight + 2)
+      html.classList.toggle('snap-slides', desktop.matches && fits)
+    }
+
+    const HARD_LOCK = 600
+    let hardLockUntil = 0
+    let inMomentum = false
+    let lastTime = 0
+    let lastAbs = 0
     let travelled = 0
 
     const stops = () => {
-      const tops = Array.from(document.querySelectorAll<HTMLElement>('.slide')).map(
-        (el) => Math.round(el.getBoundingClientRect().top + window.scrollY),
-      )
+      const tops = slides().map((el) => Math.round(el.getBoundingClientRect().top + window.scrollY))
       const bottom = html.scrollHeight - window.innerHeight
       return bottom > tops[tops.length - 1] + 1 ? [...tops, bottom] : tops
     }
 
     const onWheel = (e: WheelEvent) => {
-      if (!desktop.matches || e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return
+      if (!html.classList.contains('snap-slides') || e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return
       e.preventDefault()
+
       const now = performance.now()
-      if (now < lockedUntil) {
-        // Keep waiting while momentum events from the same gesture are still arriving.
-        lockedUntil = Math.max(lockedUntil, now + 150)
-        return
-      }
+      const abs = Math.abs(e.deltaY)
+      const quiet = now - lastTime > 100
+      const accelerating = abs >= 20 && abs > lastAbs * 1.5
+      lastTime = now
+      lastAbs = abs
+
+      if (now < hardLockUntil) return
+      // After a slide change, ignore the tail of the same swipe; a pause or a fresh push starts a new gesture.
+      if (inMomentum && !quiet && !accelerating) return
+      inMomentum = false
+      if (quiet) travelled = 0
+
       travelled += e.deltaY
       if (Math.abs(travelled) < 24) return
       const direction = travelled > 0 ? 1 : -1
@@ -136,12 +152,21 @@ export default function SkidPlanner() {
       })
       const next = Math.min(points.length - 1, Math.max(0, current + direction))
       if (next === current) return
-      lockedUntil = now + 800
+      hardLockUntil = now + HARD_LOCK
+      inMomentum = true
       window.scrollTo({ top: points[next], behavior: reduceMotion.matches ? 'auto' : 'smooth' })
     }
 
+    sync()
+    const settle = window.setTimeout(sync, 600)
+    window.addEventListener('resize', sync)
+    window.addEventListener('load', sync)
+    document.fonts?.ready.then(sync)
     window.addEventListener('wheel', onWheel, { passive: false })
     return () => {
+      window.clearTimeout(settle)
+      window.removeEventListener('resize', sync)
+      window.removeEventListener('load', sync)
       window.removeEventListener('wheel', onWheel)
       html.classList.remove('snap-slides')
     }
@@ -157,12 +182,12 @@ export default function SkidPlanner() {
       <MotionConfig reducedMotion="user">
       <div className="slide lg:min-h-[100svh] lg:flex lg:flex-col lg:justify-center">
       {/* Hero */}
-      <section className="pt-32 lg:pt-[6rem] pb-12 lg:pb-6">
+      <section className="pt-32 lg:pt-[5.5rem] pb-12 lg:pb-6">
         <div className={sectionInner}>
           <div className="grid grid-cols-1 lg:grid-cols-[minmax(16rem,22rem)_minmax(0,1fr)] gap-10 lg:gap-12 items-center">
             <div
               className="order-2 w-full max-w-full lg:w-[var(--hero-w)] lg:justify-self-end"
-              style={{ '--hero-w': 'max(24rem, min(60vw, calc((100svh - 29rem) * 1.6)))' } as React.CSSProperties}
+              style={{ '--hero-w': 'max(18rem, min(60vw, calc((100svh - 29rem) * 1.6)))' } as React.CSSProperties}
             >
               <Shot
                 src="/images/skid-planner/1-planning-week.png"
@@ -193,9 +218,9 @@ export default function SkidPlanner() {
       </section>
 
       {/* Background */}
-      <section className="pb-16 lg:pb-8">
+      <section className="pb-16 lg:pb-6">
         <div className={sectionInner}>
-          <div className="bg-surface rounded-2xl px-6 py-10 md:px-12 md:py-8">
+          <div className="bg-surface rounded-2xl px-6 py-10 md:px-12 md:py-6">
             <span className="font-clean font-medium text-[0.6875rem] tracking-widest uppercase text-muted block mb-4">
               Background
             </span>
@@ -218,7 +243,7 @@ export default function SkidPlanner() {
                 manual sorting.
               </p>
             </div>
-            <span className="font-clean font-medium text-[0.6875rem] tracking-widest uppercase text-muted block mt-6">
+            <span className="font-clean font-medium text-[0.6875rem] tracking-widest uppercase text-muted block mt-4">
               Graduation project | 2026 | Product designer
             </span>
           </div>

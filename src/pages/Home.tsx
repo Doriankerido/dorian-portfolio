@@ -101,6 +101,18 @@ export default function Home() {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
             <ProjectCard
+              title="Skid"
+              description="A system for coordinating food photography shoots for restaurants on delivery platforms - graduation project, from user research to a live prototype."
+              cardColor="#FFF207"
+              textColor="#3B15D5"
+              href="/work/skid-planner"
+            />
+          </motion.div>
+          <motion.div
+            variants={fadeUp}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <ProjectCard
               title="In Progress"
               description="New project coming soon."
               cardColor="#EAE2CB"
