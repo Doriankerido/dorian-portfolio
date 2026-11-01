@@ -4,7 +4,6 @@ import { motion } from 'framer-motion'
 interface ProjectCardProps {
   title: string
   description: string
-  tags: string[]
   href: string
   cardColor: string
   textColor?: string
@@ -14,7 +13,6 @@ interface ProjectCardProps {
 export default function ProjectCard({
   title,
   description,
-  tags,
   href,
   cardColor,
   textColor = '#FFFFFF',
@@ -49,17 +47,7 @@ export default function ProjectCard({
 
       {/* Card body */}
       <div className="p-6 md:p-8 bg-surface">
-        <p className="font-body text-base text-muted leading-relaxed mb-4">{description}</p>
-        <div className="flex flex-wrap gap-2">
-          {tags.map((tag) => (
-            <span
-              key={tag}
-              className="font-mono text-[16px] tracking-widest uppercase text-accent-dark bg-accent/20 px-3 py-1 rounded-full"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
+        <p className="font-body text-base text-muted leading-relaxed">{description}</p>
       </div>
     </motion.div>
   )

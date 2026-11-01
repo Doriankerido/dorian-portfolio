@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { motion } from 'framer-motion'
 import ProjectCard from '../components/ProjectCard'
 
@@ -6,41 +5,23 @@ const projects = [
   {
     title: 'Skid',
     description:
-      'Scheduling management platform for photography production teams with AI-assisted capabilities — dual-view interface, 46 screens, graduated with distinction.',
-    tags: ['UX Design', 'Product', 'Research'],
-    cardColor: '#3B15D5',
-    textColor: '#FFF207',
-    href: '/work/skid',
-  },
-  {
-    title: 'In Progress',
-    description: 'New project coming soon.',
-    tags: ['UX Design'],
-    cardColor: '#EAE2CB',
-    textColor: '#9B8E72',
-    href: '#',
-    isPlaceholder: true,
+      'A system for coordinating food photography shoots for restaurants on delivery platforms - graduation project, from user research to a live prototype.',
+    cardColor: '#FFF207',
+    textColor: '#3B15D5',
+    href: '/work/skid-planner',
   },
 ]
 
-const allTags = ['All', 'UX Design', 'Product', 'Research']
-
 export default function Work() {
-  const [active, setActive] = useState('All')
-
-  const filtered = projects.filter(
-    (p) => active === 'All' || p.tags.includes(active)
-  )
-
   return (
     <motion.main
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 16 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="min-h-screen pt-36 pb-32 px-6 md:px-12 max-w-[1280px] mx-auto"
+      className="min-h-screen pt-36 pb-32 px-6 md:px-12 max-w-[80rem] mx-auto"
     >
-      <span className="font-mono text-[16px] tracking-widest uppercase text-muted block mb-6">
+      <span className="font-mono text-[1rem] tracking-widest uppercase text-muted block mb-6">
         Work
       </span>
       <h1
@@ -50,24 +31,8 @@ export default function Work() {
         All Projects
       </h1>
 
-      <div className="flex flex-wrap gap-3 mb-16">
-        {allTags.map((tag) => (
-          <button
-            key={tag}
-            onClick={() => setActive(tag)}
-            className={`font-mono text-[16px] tracking-widest uppercase px-5 py-2.5 rounded-full border transition-all duration-200 ${
-              active === tag
-                ? 'bg-ink text-bg border-ink'
-                : 'border-ink/25 text-ink hover:border-ink'
-            }`}
-          >
-            {tag}
-          </button>
-        ))}
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {filtered.map((p, i) => (
+        {projects.map((p, i) => (
           <motion.div
             key={p.title}
             initial={{ opacity: 0, y: 20 }}

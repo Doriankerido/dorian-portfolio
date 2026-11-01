@@ -23,14 +23,14 @@ export default function About() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 16 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="min-h-screen pt-36 pb-32 px-6 md:px-12 max-w-[1280px] mx-auto"
+      className="min-h-screen pt-36 pb-32 px-6 md:px-12 max-w-[80rem] mx-auto"
     >
       <motion.span
         custom={0}
         variants={fadeUp}
         initial="initial"
         animate="animate"
-        className="font-mono text-[16px] tracking-widest uppercase text-muted block mb-6"
+        className="font-mono text-[1rem] tracking-widest uppercase text-muted block mb-6"
       >
         About
       </motion.span>
@@ -46,7 +46,7 @@ export default function About() {
         About
       </motion.h1>
 
-      <div className="grid md:grid-cols-[1fr,320px] gap-16 md:gap-24 items-start">
+      <div className="grid md:grid-cols-[1fr,20rem] gap-16 md:gap-24 items-start">
         <div>
           <motion.p
             custom={2}
@@ -67,7 +67,7 @@ export default function About() {
             className="font-body text-ink leading-relaxed"
             style={{ fontSize: 'clamp(1rem, 1.3vw, 1.2rem)' }}
           >
-            I work at the intersection of user research, product thinking, and visual design —
+            I work at the intersection of user research, product thinking, and visual design -
             with a focus on building tools that people actually enjoy using. Whether it's a
             scheduling platform or a zero-to-one product, I bring the same obsession with
             clarity, detail, and purpose to every project.
@@ -83,7 +83,7 @@ export default function About() {
               initial="initial"
               animate="animate"
             >
-              <span className="font-mono text-[16px] tracking-widest uppercase text-muted block mb-1.5">
+              <span className="font-mono text-[1rem] tracking-widest uppercase text-muted block mb-1.5">
                 {label}
               </span>
               {href ? (

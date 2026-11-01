@@ -18,14 +18,14 @@ export default function Nav() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-[rgba(245,243,238,0.92)] backdrop-blur-[12px] border-b border-surface'
+          ? 'bg-[rgba(245,243,238,0.92)] backdrop-blur-[0.75rem] border-b border-surface'
           : 'bg-transparent'
       }`}
     >
-      <div className="max-w-[1280px] mx-auto px-6 md:px-12 flex items-center justify-between h-16 md:h-20">
+      <div className="max-w-[80rem] mx-auto px-6 md:px-12 flex items-center justify-between h-16 md:h-20">
         <Link
           to="/"
-          className="font-display text-xl font-normal text-ink tracking-tight"
+          className="font-mono text-[1rem] tracking-widest uppercase text-ink"
         >
           DORIAN KERIDO
         </Link>
@@ -33,13 +33,12 @@ export default function Nav() {
         <nav className="hidden md:flex items-center gap-10">
           {[
             { label: 'Work', to: '/work' },
-            { label: 'About', to: '/about' },
             { label: 'Contact', to: '/contact' },
           ].map(({ label, to }) => (
             <Link
               key={label}
               to={to}
-              className={`font-mono text-[16px] tracking-widest uppercase transition-colors ${
+              className={`font-mono text-[1rem] tracking-widest uppercase transition-colors ${
                 location.pathname.startsWith(to)
                   ? 'text-accent-dark'
                   : 'text-ink hover:text-accent-dark'
@@ -51,13 +50,13 @@ export default function Nav() {
         </nav>
 
         <button
-          className="md:hidden flex flex-col gap-[5px] p-2"
+          className="md:hidden flex flex-col gap-[0.3125rem] p-2"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
         >
           <span
             className={`block w-5 h-px bg-ink transition-transform duration-200 origin-center ${
-              menuOpen ? 'rotate-45 translate-y-[7px]' : ''
+              menuOpen ? 'rotate-45 translate-y-[0.4375rem]' : ''
             }`}
           />
           <span
@@ -67,19 +66,16 @@ export default function Nav() {
           />
           <span
             className={`block w-5 h-px bg-ink transition-transform duration-200 origin-center ${
-              menuOpen ? '-rotate-45 -translate-y-[7px]' : ''
+              menuOpen ? '-rotate-45 -translate-y-[0.4375rem]' : ''
             }`}
           />
         </button>
       </div>
 
       {menuOpen && (
-        <div className="md:hidden bg-[rgba(245,243,238,0.97)] backdrop-blur-[12px] border-b border-surface px-6 pb-8 pt-2 flex flex-col gap-6">
+        <div className="md:hidden bg-[rgba(245,243,238,0.97)] backdrop-blur-[0.75rem] border-b border-surface px-6 pb-8 pt-2 flex flex-col gap-6">
           <Link to="/work" className="font-mono text-base tracking-widest uppercase text-ink py-2">
             Work
-          </Link>
-          <Link to="/about" className="font-mono text-base tracking-widest uppercase text-ink py-2">
-            About
           </Link>
           <Link to="/contact" className="font-mono text-base tracking-widest uppercase text-ink py-2">
             Contact

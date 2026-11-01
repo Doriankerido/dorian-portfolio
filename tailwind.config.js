@@ -16,6 +16,7 @@ export default {
         display: ['"Tanker"', 'system-ui', 'sans-serif'],
         body: ['"Satoshi"', 'system-ui', 'sans-serif'],
         mono: ['"DM Mono"', 'monospace'],
+        clean: ['system-ui', '-apple-system', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
       },
     },
   },

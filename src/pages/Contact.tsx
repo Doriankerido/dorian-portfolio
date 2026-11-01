@@ -43,14 +43,14 @@ export default function Contact() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 16 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="min-h-screen pt-36 pb-32 px-6 md:px-12 max-w-[1280px] mx-auto"
+      className="min-h-screen pt-36 pb-32 px-6 md:px-12 max-w-[80rem] mx-auto"
     >
       <motion.span
         custom={0}
         variants={fadeUp}
         initial="initial"
         animate="animate"
-        className="font-mono text-[16px] tracking-widest uppercase text-muted block mb-6"
+        className="font-mono text-[1rem] tracking-widest uppercase text-muted block mb-6"
       >
         Contact
       </motion.span>
@@ -71,13 +71,13 @@ export default function Contact() {
         variants={fadeUp}
         initial="initial"
         animate="animate"
-        className="font-body text-lg text-[#222222] max-w-[480px] leading-relaxed mb-20"
+        className="font-body text-lg text-[#222222] max-w-[30rem] leading-relaxed mb-20"
       >
         Open to new projects, collaborations, and opportunities.
         Feel free to reach out through any of the channels below.
       </motion.p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-[720px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-[45rem]">
         {links.map(({ label, value, href, external }, i) => (
           <motion.a
             key={label}
@@ -91,7 +91,7 @@ export default function Contact() {
             className="group flex items-center justify-between bg-surface hover:bg-accent hover:text-white transition-all duration-300 rounded-2xl px-7 py-6"
           >
             <div>
-              <span className="font-mono text-[16px] tracking-widest uppercase text-muted group-hover:text-white/60 transition-colors block mb-1">
+              <span className="font-mono text-[1rem] tracking-widest uppercase text-muted group-hover:text-white/60 transition-colors block mb-1">
                 {label}
               </span>
               <span className="font-body text-base font-medium text-ink group-hover:text-white transition-colors">

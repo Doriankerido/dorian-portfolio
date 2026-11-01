@@ -5,8 +5,8 @@ import Footer from './components/Footer'
 import ScrollToTop from './components/ScrollToTop'
 import Home from './pages/Home'
 import Work from './pages/Work'
-import SkidCaseStudy from './pages/SkidCaseStudy'
-import About from './pages/About'
+import SkidOld from './pages/SkidOld'
+import SkidPlanner from './pages/SkidPlanner'
 import Contact from './pages/Contact'
 
 function AnimatedRoutes() {
@@ -16,8 +16,8 @@ function AnimatedRoutes() {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Home />} />
         <Route path="/work" element={<Work />} />
-        <Route path="/work/skid" element={<SkidCaseStudy />} />
-        <Route path="/about" element={<About />} />
+        <Route path="/work/skid-planner" element={<SkidPlanner />} />
+        <Route path="/work/skid-old" element={<SkidOld />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
     </AnimatePresence>

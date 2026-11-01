@@ -14,30 +14,30 @@ const solutions = [
   {
     num: '01',
     title: 'Onboarding',
-    body: 'Confirms the details that most often go wrong — correct address, correct point of contact — and sends that contact a short video showing exactly how to prepare the space before the shoot.',
+    body: 'Confirms the details that most often go wrong - correct address, correct point of contact - and sends that contact a short video showing exactly how to prepare the space before the shoot.',
     img: null,
   },
   {
     num: '02',
     title: 'Photographer Hub',
-    body: 'Centralizes invoicing, shoot history, and recurring issues per photographer, and defines each photographer\'s working zones and business-type preferences — so future assignments are matched automatically instead of guessed at.',
+    body: 'Centralizes invoicing, shoot history, and recurring issues per photographer, and defines each photographer\'s working zones and business-type preferences - so future assignments are matched automatically instead of guessed at.',
     img: null,
   },
   {
     num: '03',
     title: 'Auto-Assign',
-    body: 'Photographers mark specific days as flexible; the system distributes those slots to restaurants automatically by urgency — closer to a walk-in queue than a fixed calendar. Scoped for larger, higher-complexity restaurants first.',
-    img: { src: '/images/skid/skid-scheduled.png', alt: 'Skid — Auto-assign scheduling view' },
+    body: 'Photographers mark specific days as flexible; the system distributes those slots to restaurants automatically by urgency - closer to a walk-in queue than a fixed calendar. Scoped for larger, higher-complexity restaurants first.',
+    img: { src: '/images/skid/skid-scheduled.png', alt: 'Skid - Auto-assign scheduling view' },
   },
   {
     num: '04',
     title: 'Cancellations',
-    body: 'A dedicated hub replacing scattered chats — surfacing at-risk slots and notifying the right people immediately, instead of a scramble across threads.',
-    img: { src: '/images/skid/skid-attention-required.png', alt: 'Skid — Cancellations and attention required view' },
+    body: 'A dedicated hub replacing scattered chats - surfacing at-risk slots and notifying the right people immediately, instead of a scramble across threads.',
+    img: { src: '/images/skid/skid-attention-required.png', alt: 'Skid - Cancellations and attention required view' },
   },
 ]
 
-export default function SkidCaseStudy() {
+export default function SkidOld() {
   return (
     <motion.main
       initial={{ opacity: 0, y: 20 }}
@@ -46,9 +46,9 @@ export default function SkidCaseStudy() {
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
     >
       {/* Header */}
-      <section className="pt-36 pb-16 px-6 md:px-12 max-w-[1280px] mx-auto">
+      <section className="pt-36 pb-16 px-6 md:px-12 max-w-[80rem] mx-auto">
         <motion.div variants={stagger} initial="initial" animate="animate">
-          <motion.span variants={fadeUp} className="font-mono text-[16px] tracking-widest uppercase text-muted block mb-6">
+          <motion.span variants={fadeUp} className="font-mono text-[1rem] tracking-widest uppercase text-muted block mb-6">
             Graduation Project · 2026
           </motion.span>
 
@@ -62,10 +62,10 @@ export default function SkidCaseStudy() {
 
           <motion.p
             variants={fadeUp}
-            className="font-body text-muted max-w-[600px] leading-snug mb-6"
+            className="font-body text-muted max-w-[37.5rem] leading-snug mb-6"
             style={{ fontSize: 'clamp(1.1rem, 2vw, 1.35rem)' }}
           >
-            Operations Platform — Food Photography Logistics
+            Operations Platform - Food Photography Logistics
           </motion.p>
 
           <motion.div variants={fadeUp} className="flex justify-end mb-6">
@@ -73,7 +73,7 @@ export default function SkidCaseStudy() {
               href="https://www.figma.com/proto/fKbhiRcvtv96cHwhv19RTw/Dorian-Skid-Gmar?node-id=766-11757&p=f&viewport=201%2C3088%2C0.3&t=U8ZOUdZTh4Qs41IZ-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=766%3A11757&show-proto-sidebar=1&page-id=654%3A18035"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 font-mono text-[16px] tracking-widest uppercase bg-lemon text-ink px-8 py-4 rounded-full hover:bg-ink hover:text-lemon transition-all duration-300"
+              className="inline-flex items-center gap-3 font-mono text-[1rem] tracking-widest uppercase bg-lemon text-ink px-8 py-4 rounded-full hover:bg-ink hover:text-lemon transition-all duration-300"
             >
               View Prototype <span>↗</span>
             </a>
@@ -90,7 +90,7 @@ export default function SkidCaseStudy() {
               { label: 'Tools', value: 'Figma · User Research · Prototyping' },
             ].map(({ label, value }) => (
               <div key={label}>
-                <span className="font-mono text-[16px] tracking-widest uppercase text-muted block mb-1.5">
+                <span className="font-mono text-[1rem] tracking-widest uppercase text-muted block mb-1.5">
                   {label}
                 </span>
                 <span className="font-body text-base text-ink leading-snug">{value}</span>
@@ -101,10 +101,10 @@ export default function SkidCaseStudy() {
       </section>
 
       {/* Hero image */}
-      <div className="px-6 md:px-12 max-w-[1280px] mx-auto mb-28">
+      <div className="px-6 md:px-12 max-w-[80rem] mx-auto mb-28">
         <img
           src="/images/skid/skid-planning.png"
-          alt="Skid planning interface — dual-view table and calendar"
+          alt="Skid planning interface - dual-view table and calendar"
           className="w-full rounded-2xl shadow-2xl"
           style={{
             border: '1px solid rgba(200,184,154,0.15)',
@@ -113,16 +113,16 @@ export default function SkidCaseStudy() {
       </div>
 
       {/* Overview */}
-      <section className="px-6 md:px-12 max-w-[1280px] mx-auto mb-28">
-        <div className="grid md:grid-cols-[200px,1fr] gap-12 md:gap-20">
-          <span className="font-mono text-[16px] tracking-widest uppercase text-muted mt-1 md:text-right">
+      <section className="px-6 md:px-12 max-w-[80rem] mx-auto mb-28">
+        <div className="grid md:grid-cols-[12.5rem,1fr] gap-12 md:gap-20">
+          <span className="font-mono text-[1rem] tracking-widest uppercase text-muted mt-1 md:text-right">
             Overview
           </span>
-          <div className="max-w-[680px]">
+          <div className="max-w-[42.5rem]">
             <p className="font-body text-ink leading-relaxed mb-5" style={{ fontSize: 'clamp(1rem, 1.3vw, 1.15rem)' }}>
               Skid coordinates food photography shoots for restaurants listed on Wolt.
-              A small internal team manages the process — matching photographers with restaurants,
-              tracking photographer payments and no-shows — mostly through chats, spreadsheets,
+              A small internal team manages the process - matching photographers with restaurants,
+              tracking photographer payments and no-shows - mostly through chats, spreadsheets,
               and manual lists.
             </p>
             <p className="font-body text-ink leading-relaxed" style={{ fontSize: 'clamp(1rem, 1.3vw, 1.15rem)' }}>
@@ -133,18 +133,18 @@ export default function SkidCaseStudy() {
       </section>
 
       {/* Challenges */}
-      <section className="px-6 md:px-12 max-w-[1280px] mx-auto mb-28">
-        <div className="grid md:grid-cols-[200px,1fr] gap-12 md:gap-20">
-          <span className="font-mono text-[16px] tracking-widest uppercase text-muted mt-1 md:text-right">
+      <section className="px-6 md:px-12 max-w-[80rem] mx-auto mb-28">
+        <div className="grid md:grid-cols-[12.5rem,1fr] gap-12 md:gap-20">
+          <span className="font-mono text-[1rem] tracking-widest uppercase text-muted mt-1 md:text-right">
             Challenges
           </span>
-          <div className="max-w-[680px]">
+          <div className="max-w-[42.5rem]">
             <h2 className="font-display font-normal text-ink mb-6 leading-tight" style={{ fontSize: 'clamp(1.5rem, 2.5vw, 2.2rem)' }}>
               Everyone shows up unprepared
             </h2>
             <p className="font-body text-ink leading-relaxed" style={{ fontSize: 'clamp(1rem, 1.3vw, 1.15rem)' }}>
               A shoot only works when the restaurant, the photographer, and the internal team are
-              all aligned — and today none of that is guaranteed. Restaurants don't know what to
+              all aligned - and today none of that is guaranteed. Restaurants don't know what to
               expect. Photographers arrive to changed menus with no one on site. Cancellations and
               payment issues fall through the cracks with no single place to catch them.
             </p>
@@ -154,19 +154,19 @@ export default function SkidCaseStudy() {
 
       {/* Research */}
       <section className="bg-surface py-24 mb-28">
-        <div className="px-6 md:px-12 max-w-[1280px] mx-auto">
-          <div className="grid md:grid-cols-[200px,1fr] gap-12 md:gap-20">
-            <span className="font-mono text-[16px] tracking-widest uppercase text-muted mt-1 md:text-right">
+        <div className="px-6 md:px-12 max-w-[80rem] mx-auto">
+          <div className="grid md:grid-cols-[12.5rem,1fr] gap-12 md:gap-20">
+            <span className="font-mono text-[1rem] tracking-widest uppercase text-muted mt-1 md:text-right">
               Research
             </span>
-            <div className="max-w-[680px]">
+            <div className="max-w-[42.5rem]">
               <h2 className="font-display font-normal text-ink mb-6 leading-tight" style={{ fontSize: 'clamp(1.5rem, 2.5vw, 2.2rem)' }}>
                 Listening to both ends of the shoot
               </h2>
               <p className="font-body text-ink leading-relaxed" style={{ fontSize: 'clamp(1rem, 1.3vw, 1.15rem)' }}>
                 I interviewed scheduling coordinators, team leads, and freelance photographers
                 to find out where it actually breaks. One issue came up in every single interview:
-                restaurants are never truly ready when the photographer arrives — the clearest, most
+                restaurants are never truly ready when the photographer arrives - the clearest, most
                 validated signal in the research. Three more recurring pains followed: unclear payment
                 status, rigid scheduling windows, and cancellations with no real tools to manage them.
               </p>
@@ -176,8 +176,8 @@ export default function SkidCaseStudy() {
       </section>
 
       {/* Solutions */}
-      <section className="px-6 md:px-12 max-w-[1280px] mx-auto mb-28">
-        <span className="font-mono text-[16px] tracking-widest uppercase text-muted block mb-4">
+      <section className="px-6 md:px-12 max-w-[80rem] mx-auto mb-28">
+        <span className="font-mono text-[1rem] tracking-widest uppercase text-muted block mb-4">
           Solutions
         </span>
         <h2 className="font-display font-normal text-ink mb-20 leading-tight" style={{ fontSize: 'clamp(1.5rem, 2.5vw, 2.2rem)' }}>
@@ -194,7 +194,7 @@ export default function SkidCaseStudy() {
                 >
                   {s.num}
                 </span>
-                <div className="pt-1 max-w-[580px]">
+                <div className="pt-1 max-w-[36.25rem]">
                   <h3 className="font-display text-2xl md:text-3xl font-normal text-ink mb-4 leading-tight">
                     {s.title}
                   </h3>
@@ -220,7 +220,7 @@ export default function SkidCaseStudy() {
                     background: 'rgba(59,21,213,0.03)',
                   }}
                 >
-                  <span className="font-mono text-[16px] tracking-widest uppercase text-muted/50">
+                  <span className="font-mono text-[1rem] tracking-widest uppercase text-muted/50">
                     Screenshot coming soon
                   </span>
                 </div>
@@ -232,9 +232,9 @@ export default function SkidCaseStudy() {
 
       {/* Next Project */}
       <Link to="/work" className="block bg-ink group">
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 flex items-center justify-between">
+        <div className="max-w-[80rem] mx-auto px-6 md:px-12 py-20 flex items-center justify-between">
           <div>
-            <span className="font-mono text-[16px] tracking-widest uppercase text-white/35 block mb-3">
+            <span className="font-mono text-[1rem] tracking-widest uppercase text-white/35 block mb-3">
               Next Project →
             </span>
             <span
