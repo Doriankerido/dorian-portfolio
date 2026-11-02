@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { motion, MotionConfig } from 'framer-motion'
 
-const PROTOTYPE_URL = 'https://claude.ai/artifact/1RKpsnWPgqmFxNRk7Xfo5r'
+const PROTOTYPE_URL = '/prototype/skid/index.html'
 
 // Wide illustration under the Problem heading. Set src (e.g. '/images/skid-planner/problem.png') to replace the placeholder.
 const PROBLEM_IMAGE = { src: '', alt: '' }

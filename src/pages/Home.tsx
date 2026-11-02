@@ -103,8 +103,9 @@ export default function Home() {
             <ProjectCard
               title="Skid"
               description="A system for coordinating food photography shoots for restaurants on delivery platforms - graduation project, from user research to a live prototype."
-              cardColor="#FFF207"
-              textColor="#3B15D5"
+              cardColor="#3B15D5"
+              textColor="#FFF207"
+              image="/images/skid-planner/thumb.png"
               href="/work/skid-planner"
             />
           </motion.div>

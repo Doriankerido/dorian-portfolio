@@ -1,0 +1,2929 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SKID — Schedule</title>
+<link rel="icon" href="data:,">
+<style>
+  /* Logo font is bundled with this file so the prototype works offline and without any third-party request. */
+  @font-face {
+    font-family: "Anton";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("anton-latin.woff2") format("woff2");
+  }
+
+  :root {
+    --bg: #ffffff;
+    --bg-sidebar: #fafafa;
+    --border: #e5e5e5;
+    --text: #18181b;
+    --text-muted: #71717a;
+    --text-faint: #86868f;
+    --accent: #2563eb;
+    --accent-dark: #1e1b4b;
+    --navy: #1e1b4b;
+    --danger-bg: #fee2e2;
+    --danger-text: #dc2626;
+    --slot-fill: #16a34a;
+    --slot-empty: #e4e4e7;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: "Anton", sans-serif;
+    font-weight: 400;
+    font-size: 26px;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    color: #000;
+    margin-bottom: 20px;
+    padding: 0 4px;
+  }
+  .logo span { color: #000; }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px;
+    color: var(--text-faint);
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .nav-group { margin-bottom: 4px; }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    user-select: none;
+  }
+  .nav-item:hover { background: #f4f4f5; }
+
+  .nav-item.active-group { background: #eff6ff; color: var(--accent); font-weight: 700; }
+  .nav-item.active-group:hover { background: #e0ecfe; }
+  .nav-item.active-group .icon { color: var(--accent); opacity: 1; }
+  .nav-item .icon { width: 18px; display: inline-flex; align-items: center; justify-content: center; opacity: 0.7; color: var(--text-muted); }
+  .nav-item .icon svg { width: 16px; height: 16px; display: block; }
+  .search-box .icon svg { width: 14px; height: 14px; display: block; }
+  .nav-item .chev { margin-left: auto; opacity: 0.5; font-size: 11px; }
+
+  .sub-nav { padding-left: 28px; margin-top: 2px; margin-bottom: 8px; }
+  .sub-item {
+    padding: 8px 10px;
+    font-size: 14px;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    cursor: pointer;
+    margin-bottom: 2px;
+  }
+  .sub-item.active {
+    background: #eef2ff;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .sub-item:not(.active):hover { background: #f4f4f5; }
+
+  .sidebar-bottom { border-top: 1px solid var(--border); padding-top: 12px; margin-top: 12px; }
+
+  /* ---------- Main ---------- */
+  .main {
+    flex: 1;
+    padding: 40px 48px;
+    max-width: 1400px;
+  }
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+
+  h1 { font-size: 30px; margin: 0 0 6px; letter-spacing: -0.5px; }
+  .subtitle { color: var(--text-muted); font-size: 15px; margin: 0; }
+
+  .btn-new {
+    background: #eef2ff;
+    color: var(--accent);
+    border: none;
+    border-radius: 999px;
+    padding: 10px 18px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .btn-new:hover { background: #e0e7ff; }
+
+  .tabs {
+    display: flex;
+    gap: 28px;
+    border-bottom: 1px solid var(--border);
+    margin-top: 28px;
+  }
+  .tab {
+    padding: 10px 2px 14px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab:not(.active):hover { color: var(--text); }
+
+  .toolbar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    background: #fafafa;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px;
+    margin-top: 20px;
+  }
+
+  .toolbar-search {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    color: var(--text-faint);
+    font-size: 13px;
+  }
+  .toolbar-search input {
+    border: none; outline: none; font-size: 13px; width: 100%;
+    font-family: inherit; color: var(--text);
+    background: transparent;
+    caret-color: var(--text);
+  }
+  .toolbar-search input::placeholder { color: var(--text-faint); opacity: 1; }
+  .toolbar-search input:-webkit-autofill,
+  .toolbar-search input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+    -webkit-text-fill-color: var(--text);
+  }
+
+  .dropdown-btn, .filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .dropdown-btn:hover, .filter-btn:hover { background: #f4f4f5; }
+  .dropdown-btn { font: inherit; }
+
+  .tb-filter { position: relative; }
+  .tb-filter-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 30;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 16px rgba(0,0,0,.1);
+    padding: 6px;
+    min-width: 170px;
+  }
+  .tb-filter-menu.open { display: block; }
+  .tb-filter-menu label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .tb-filter-menu label:hover { background: #f4f4f5; }
+  .tb-filter-menu input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    background: #fff;
+    flex-shrink: 0;
+    position: relative;
+    cursor: pointer;
+    margin: 0;
+  }
+  .tb-filter-menu input[type="checkbox"]:checked {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .tb-filter-menu input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    left: 4px; top: 1px;
+    width: 4px; height: 8px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(40deg);
+  }
+  .tb-filter-menu .swatch { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12); }
+  .dd-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 15px;
+    height: 15px;
+    padding: 0 4px;
+    margin-left: 4px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 15px;
+  }
+  .dd-badge:empty { display: none; }
+
+  .view-toggle {
+    display: flex;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 2px;
+    gap: 2px;
+  }
+  .view-btn {
+    border: none;
+    background: transparent;
+    padding: 5px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text-muted);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .view-btn:hover { background: #f4f4f5; }
+  .view-btn.active { background: var(--accent); color: #fff; }
+
+  /* ---------- Timeline ---------- */
+  .content-row {
+    display: flex;
+    gap: 32px;
+    margin-top: 28px;
+    align-items: flex-start;
+  }
+
+  .timeline {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+  }
+
+  .calendar-panel {
+    width: 300px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 24px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+
+  .calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .calendar-header .nav-arrow {
+    cursor: pointer;
+    color: var(--text-faint);
+    font-size: 16px;
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+  .calendar-header .nav-arrow:hover { background: #f4f4f5; color: var(--text); }
+  .calendar-header .month-title { font-weight: 700; font-size: 15px; }
+
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    row-gap: 10px;
+    text-align: center;
+  }
+  .calendar-grid .dow {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-faint);
+    padding-bottom: 6px;
+  }
+  .cal-day {
+    position: relative;
+    font-size: 13px;
+    color: var(--text);
+    padding: 7px 0;
+    cursor: default;
+  }
+  .cal-day.muted { color: var(--text-faint); }
+  .cal-day[data-cal-num] { cursor: pointer; }
+  .cal-day[data-cal-num]:hover .num-wrap { background: #e4e4e7; }
+  .cal-day .num-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+  }
+  .cal-day.has-availability .num-wrap { background: #f4f4f5; font-weight: 700; }
+  .avail-bars {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    margin-top: 3px;
+    height: 4px;
+  }
+  .avail-bar {
+    width: 7px;
+    height: 4px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .calendar-legend {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px 8px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 10.5px;
+    color: var(--text-muted);
+  }
+  .calendar-legend .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .calendar-legend .swatch {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .swatch-needs { background: #fbbf24; }
+  .swatch-ready { background: #4ade80; }
+  .swatch-shoot { background: #93a6f5; }
+
+  .day-row {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+  }
+  .day-row.flash-highlight { animation: flashHighlight 1.2s ease; }
+  .card.flash-highlight { animation: flashHighlight 1.2s ease; }
+  .day-row-today {
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed var(--border);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .day-row-today .day-label {
+    width: auto;
+    padding-top: 0;
+    margin-bottom: 12px;
+  }
+  .day-row-today .day-label .dot-line,
+  .day-row-today .day-label .dot {
+    display: none;
+  }
+  .day-row-today .day-cards {
+    width: 100%;
+    align-self: stretch;
+  }
+  .btn-sent { background: transparent; color: #15803d; border: 1px solid transparent; border-radius: var(--radius-sm); padding: 9px 18px; font-size: 13px; font-weight: 500; cursor: default; display: inline-flex; align-items: center; gap: 6px; box-shadow: none; }
+  @keyframes flashHighlight {
+    0%, 100% { background: transparent; }
+    20% { background: #eff6ff; }
+  }
+
+  .week-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 4px 0 20px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .week-divider::before, .week-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .day-label {
+    width: 90px;
+    flex-shrink: 0;
+    position: relative;
+    padding-top: 18px;
+  }
+  .day-label .dot-line {
+    position: absolute;
+    left: 100%;
+    top: 24px;
+    transform: translateX(11px);
+    width: 1px;
+    height: calc(100% + 20px);
+    background: repeating-linear-gradient(to bottom, var(--border) 0 4px, transparent 4px 8px);
+  }
+  .day-label .dot {
+    position: absolute;
+    left: 100%;
+    top: 20px;
+    transform: translate(6px, -50%);
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--text-faint);
+    border: 2px solid #fff;
+  }
+  .day-main { font-weight: 700; font-size: 15px; }
+  .day-sub { color: var(--text-muted); font-size: 13px; margin-top: 2px; }
+
+  .day-cards { flex: 1; display: flex; flex-direction: column; gap: 14px; }
+
+  .card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+
+  .card.is-empty {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+  }
+
+  .card.is-ready {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+  }
+
+  .card.is-ready.card-today {
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+  }
+
+  .btn-move {
+    background: #16a34a;
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-move:hover { background: #15803d; }
+
+  .card.card-leaving {
+    transition: opacity 0.3s ease, transform 0.3s ease, max-height 0.3s ease, margin 0.3s ease, padding 0.3s ease;
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  .card-moved-placeholder {
+    background: #f0fdf4;
+    border: 1px dashed #86efac;
+    animation: moved-in 0.3s ease;
+  }
+  @keyframes moved-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .moved-message {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .moved-check { color: #16a34a; flex-shrink: 0; }
+  .moved-check svg { width: 22px; height: 22px; display: block; }
+  .moved-text { flex: 1; font-size: 13px; color: var(--text-muted); }
+  .moved-text strong { color: var(--text); }
+  .moved-link { color: var(--accent); text-decoration: underline; cursor: pointer; }
+  .moved-link:hover { color: #1e40af; }
+  .btn-undo {
+    background: #fff;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .btn-undo:hover { background: #f4f4f5; }
+
+  .needs-scheduling {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #b45309;
+    background: #fef3c7;
+    border-radius: 999px;
+    padding: 3px 10px;
+  }
+  .needs-scheduling .dot { width: 5px; height: 5px; border-radius: 50%; background: #d97706; }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .card-photographer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .avatar {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: #fde2e2;
+    flex-shrink: 0;
+  }
+  .photographer-name { font-weight: 700; font-size: 16px; }
+  .drag-handle { color: var(--text-faint); cursor: grab; font-size: 16px; letter-spacing: 1px; }
+
+  .slot-counter {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: #f4f4f5;
+    border-radius: 999px;
+    padding: 4px 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .ready-check { color: #15803d; font-weight: 700; font-size: 14px; line-height: 1; }
+
+  .confetti-piece {
+    position: fixed;
+    width: 5px; height: 5px;
+    border-radius: 1px;
+    pointer-events: none;
+    z-index: 9999;
+    animation: confetti-burst 0.65s ease-out forwards;
+  }
+  @keyframes confetti-burst {
+    0% { transform: translate(-50%, -50%) rotate(0deg); opacity: 1; }
+    100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(260deg); opacity: 0; }
+  }
+  .slot-dots { display: flex; gap: 3px; }
+  .slot-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--slot-empty); }
+  .slot-dot.filled { background: var(--slot-fill); }
+
+  .card-empty-mid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 90px;
+    color: var(--text-faint);
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+  }
+  .card-empty-mid:hover { background: #fafafa; color: var(--text-muted); }
+
+  .biz-list { margin: 12px 0; }
+  .add-slot-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    width: 100%;
+    margin: 10px 0 2px;
+    padding: 11px 16px;
+    border: 1.5px dashed var(--accent);
+    border-radius: 10px;
+    background: #eff6ff;
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s ease, box-shadow 0.15s ease;
+  }
+  .add-slot-row:hover { background: var(--accent); color: #fff; border-style: solid; box-shadow: 0 2px 8px rgba(37,99,235,0.3); }
+  .add-slot-row .slot-plus { font-size: 17px; line-height: 1; }
+  .biz-row {
+    padding: 10px 0;
+    font-size: 14px;
+    border-bottom: 1px solid #f4f4f5;
+  }
+  .biz-row:last-child { border-bottom: none; }
+  .biz-row-main {
+    display: grid;
+    grid-template-columns: 28px 24px 60px minmax(90px, 1fr) 100px 32px;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+  }
+  .biz-row-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+    padding-left: 40px;
+  }
+  .biz-details-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+  }
+  .biz-details-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .row-delete {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto;
+    border: none;
+    background: transparent;
+    color: var(--danger-text);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    opacity: 0.75;
+  }
+  .row-delete:hover { opacity: 1; text-decoration: underline; }
+  .row-delete svg { width: 14px; height: 14px; display: block; }
+  .row-toggle {
+    border: none;
+    background: transparent;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    justify-self: start;
+  }
+  .row-toggle svg { width: 14px; height: 14px; transition: transform 0.15s ease; transform: rotate(-90deg); }
+  .row-toggle.open svg { transform: rotate(0deg); }
+  .biz-row-main > * { min-width: 0; }
+  .biz-address, .biz-contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-muted);
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: min(220px, 100%);
+    flex-shrink: 1;
+  }
+  @media (max-width: 640px) {
+    .biz-address, .biz-contact {
+      white-space: normal;
+      overflow: visible;
+      text-overflow: unset;
+      max-width: 100%;
+    }
+    .biz-details-info { gap: 8px 14px; }
+  }
+  /* Native <select> sizes its closed box to the widest *option* in the
+     list, not the selected value — so a short value like "Closed" would
+     always leave a big gap before the arrow no matter the wrapper width.
+     Fix: a visible text+arrow pill sized to the actual selected text,
+     with the real <select> laid invisibly on top of it for interaction. */
+  .status-select-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    max-width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #fff;
+  }
+  .status-select-wrap::after {
+    content: "";
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    width: 5px;
+    height: 5px;
+    border-right: 1.5px solid #71717a;
+    border-bottom: 1.5px solid #71717a;
+    transform: translateY(-65%) rotate(45deg);
+    pointer-events: none;
+  }
+  .status-select-wrap.status-Optional { border-color: #e4e4e7; background: #fafafa; }
+  .status-select-wrap.status-Contacted { border-color: #fde68a; background: #fffbeb; }
+  .status-select-wrap.status-Closed { border-color: #bbf7d0; background: #f0fdf4; }
+  .status-select-wrap.status-InProgress { border-color: #fde68a; background: #fffbeb; }
+  .status-label {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 3px 18px 3px 8px;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .status-label.status-Optional { color: #52525b; }
+  .status-label.status-Contacted { color: #b45309; }
+  .status-label.status-Closed { color: #15803d; }
+  .status-label.status-InProgress { color: #b45309; }
+  .status-select {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    color: transparent;
+    cursor: pointer;
+    opacity: 0;
+  }
+  .status-select option { color: var(--text); opacity: 1; }
+
+  .note-btn {
+    position: relative;
+    border: none;
+    background: transparent;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    opacity: 0.55;
+    color: var(--text-muted);
+  }
+  .note-btn:hover { opacity: 1; }
+  .note-plus {
+    position: absolute;
+    bottom: 1px; right: 1px;
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    border: 1.5px solid #fff;
+  }
+  .note-dot {
+    position: absolute;
+    top: -2px; right: -2px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 1.5px solid #fff;
+  }
+
+  .size-badge {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    color: var(--text-muted);
+    background: #f4f4f5;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .biz-time {
+    display: flex; align-items: center; gap: 4px;
+    font-weight: 600; color: var(--text);
+    white-space: nowrap;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .biz-time.is-unset { color: var(--text-muted); font-weight: 500; }
+  .biz-time .chev { font-size: 11px; color: var(--text-faint); }
+  .biz-note-input {
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text);
+    background: #fff;
+    color-scheme: light;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 4px 8px;
+    min-width: 220px;
+    flex: 1;
+    outline: none;
+  }
+  .biz-note-preview { color: var(--text-muted); font-size: 14px; font-style: italic; }
+  .biz-menu-link {
+    display: inline-flex; align-items: center; gap: 4px;
+    color: var(--accent); font-size: 14px; font-weight: 600;
+    cursor: pointer;
+  }
+  .biz-menu-link:hover { text-decoration: underline; }
+  .biz-time-input {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    background: #fff;
+    color-scheme: light;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 3px 6px;
+    width: 100%;
+    outline: none;
+  }
+
+  .biz-name-wrap { display: flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; }
+  .biz-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 1; font-size: 14px; }
+  .biz-phone { color: var(--text-muted); display: flex; align-items: center; gap: 6px; flex-shrink: 0; justify-self: start; cursor: pointer; font-size: 14px; }
+
+  .toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translate(-50%, -16px);
+    background: #18181b;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 999;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast svg { width: 15px; height: 15px; flex-shrink: 0; color: #4ade80; }
+  .size-badge, .biz-time, .note-btn { justify-self: start; }
+  .copy-icon { cursor: pointer; opacity: 0.6; display: inline-flex; align-items: center; }
+  .copy-icon:hover { opacity: 1; }
+
+  .biz-icon { display: inline-flex; align-items: center; flex-shrink: 0; }
+  .biz-icon svg, .copy-icon svg { width: 13px; height: 13px; display: block; }
+  .note-btn svg { width: 15px; height: 15px; display: block; }
+
+  .add-line {
+    color: var(--text-faint);
+    font-size: 14px;
+    padding: 14px 0;
+    cursor: pointer;
+    text-align: center;
+  }
+  .add-line:hover { color: var(--text-muted); }
+  .add-line.disabled { color: var(--text-faint); opacity: 0.4; cursor: not-allowed; }
+
+  .card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+  }
+
+  .btn-row { display: flex; gap: 8px; margin-left: auto; }
+
+  .btn-dark {
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-dark:hover { opacity: 0.9; }
+
+  .btn-cta {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-cta:hover { background: #1d4ed8; }
+
+  .add-split { position: relative; display: flex; }
+  .add-split-main.btn-light { border-radius: var(--radius-sm) 0 0 var(--radius-sm); padding: 9px 14px; }
+  .add-split-toggle.btn-light {
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    border-left: 1px solid rgba(0,0,0,0.08);
+    padding: 9px 10px;
+    display: flex; align-items: center;
+  }
+  .add-split-toggle svg { width: 12px; height: 12px; }
+  .add-split-menu {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    margin-bottom: 6px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.14);
+    z-index: 20;
+    min-width: 170px;
+    overflow: hidden;
+  }
+  .add-split-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 14px;
+    border: none;
+    background: #fff;
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .add-split-item:hover { background: #f4f4f5; }
+
+  .btn-light {
+    background: #f4f4f5;
+    color: var(--text);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-light:hover { background: #e4e4e7; }
+  .btn-light.is-sent { background: #f0fdf4; color: #15803d; border: 1px solid #86efac; display: inline-flex; align-items: center; gap: 6px; }
+  .btn-light.is-sent:hover { background: #dcfce7; }
+  @keyframes sentPop {
+    0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(34,197,94,0.5); }
+    55% { transform: scale(1.15); box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+  }
+  .just-sent { animation: sentPop 0.55s cubic-bezier(.34,1.56,.64,1); }
+
+  .btn-danger {
+    background: var(--danger-bg);
+    color: var(--danger-text);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-danger:hover { background: #fecaca; }
+
+  .btn-confirm-danger {
+    background: #dc2626;
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-confirm-danger:hover { background: #b91c1c; }
+
+  .btn-confirm-warn {
+    background: #d97706;
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-confirm-warn:hover { background: #b45309; }
+
+  .assignee-wrap { position: relative; display: inline-flex; }
+  .assignee-chip {
+    background: transparent;
+    color: var(--text);
+    border: 1px dashed var(--border);
+    border-radius: 999px;
+    padding: 7px 10px 7px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+  .assignee-chip .chip-chevron { width: 13px; height: 13px; display: inline-flex; color: var(--text-faint); }
+  button.assignee-chip:hover { background: #f4f4f5; border-color: var(--text-faint); }
+  .assignee-chip .dot { width: 5px; height: 5px; border-radius: 50%; background: #fff; }
+  .assignee-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 30;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 16px rgba(0,0,0,.1);
+    padding: 4px;
+    min-width: 130px;
+  }
+  .assignee-menu.open { display: block; }
+  .assignee-menu button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 7px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+  }
+  .assignee-menu button:hover { background: #f4f4f5; }
+  .assignee-menu .swatch { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12); }
+
+  /* ---------- Add-businesses panel ---------- */
+
+  .panel-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(24, 24, 27, 0.35);
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+  }
+  .panel-overlay.open { opacity: 1; visibility: visible; }
+
+  .confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(24, 24, 27, 0.35);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+  }
+  .confirm-overlay.open { opacity: 1; visibility: visible; }
+  .confirm-box {
+    background: #fff;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+    padding: 22px 24px;
+    width: 340px;
+    max-width: 90vw;
+  }
+  .confirm-box p { margin: 0 0 18px; font-size: 14px; color: var(--text); line-height: 1.5; }
+  .confirm-box p.confirm-title { margin-bottom: 6px; font-size: 15px; font-weight: 700; }
+  .confirm-btns { display: flex; justify-content: flex-end; gap: 8px; }
+  .btn-summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: var(--radius-sm);
+    padding: 5px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .btn-summary:hover { background: #f4f4f5; }
+  .btn-summary:disabled { cursor: default; color: var(--text-faint); }
+  .summary-sent-check { color: #15803d; font-weight: 700; }
+
+  .side-panel {
+    position: fixed;
+    top: 0; right: 0;
+    height: 100%;
+    width: 860px;
+    max-width: 96vw;
+    background: #fff;
+    box-shadow: -8px 0 24px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 101;
+  }
+  .panel-overlay.open .side-panel { transform: translateX(0); }
+
+  .panel-header {
+    padding: 28px 32px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .panel-title { font-size: 18px; font-weight: 700; }
+  .panel-subtitle { color: var(--text-muted); font-size: 13px; margin-top: 2px; }
+  .panel-close {
+    border: none; background: #f4f4f5; width: 30px; height: 30px;
+    border-radius: 50%; cursor: pointer; font-size: 15px; color: var(--text-muted);
+  }
+  .panel-close:hover { background: #e4e4e7; }
+
+  .panel-progress {
+    margin-top: 0;
+  }
+  .panel-progress-top {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; font-weight: 600; color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .panel-progress-label span { color: var(--accent); }
+  .progress-track {
+    height: 8px; border-radius: 999px; background: var(--slot-empty); overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--accent); border-radius: 999px;
+    width: 0%; transition: width 0.15s ease;
+  }
+  .progress-fill.full { background: var(--slot-fill); }
+
+  .panel-body { flex: 1; overflow-y: auto; padding: 16px 32px 24px; }
+
+  .panel-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    margin-top: 0;
+    margin-bottom: 14px;
+    color: var(--text-faint);
+  }
+  .panel-search svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .panel-search input {
+    border: none; outline: none; font-size: 13px; width: 100%;
+    font-family: inherit; color: var(--text); background: transparent;
+  }
+  .panel-search input::placeholder { color: var(--text-faint); }
+
+  .panel-quick-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .quick-filter {
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text-muted);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .quick-filter:hover { background: #f4f4f5; }
+  .quick-filter.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .divider-row td {
+    padding: 22px 8px 8px !important;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-faint);
+    cursor: default;
+    border-bottom: none !important;
+  }
+  .divider-row:first-child td { padding-top: 4px !important; }
+  .no-results-row td { padding: 24px 8px; text-align: center; color: var(--text-faint); cursor: default; }
+
+  .biz-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .biz-table thead th {
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-faint);
+    font-weight: 700;
+    padding: 10px 10px;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; background: #fff;
+  }
+  .biz-table tbody tr { border-bottom: 1px solid #f4f4f5; cursor: pointer; }
+  .biz-table tbody tr:hover { background: #fafafa; }
+  .biz-table tbody tr.row-selected { background: #eef2ff; }
+  .biz-table tbody tr.row-disabled { opacity: 0.4; cursor: not-allowed; }
+  .biz-table tbody tr.divider-row,
+  .biz-table tbody tr.no-results-row { cursor: default; }
+  .biz-table tbody tr.divider-row:hover,
+  .biz-table tbody tr.no-results-row:hover { background: transparent; }
+  .biz-table td { padding: 13px 10px; vertical-align: middle; white-space: nowrap; }
+  .biz-table td.col-check { width: 32px; }
+  .biz-table td.col-name { font-weight: 600; }
+
+  .status-pill {
+    font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px;
+    display: inline-block;
+  }
+
+  .panel-footer {
+    padding: 18px 32px 22px;
+    border-top: 1px solid var(--border);
+  }
+  .panel-footer-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .btn-outline {
+    background: #fff; color: var(--text); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .btn-outline:hover { background: #f4f4f5; }
+  .btn-save {
+    background: var(--accent); color: #fff; border: none;
+    border-radius: var(--radius-sm); padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .btn-save:hover { background: #1d4ed8; }
+  .btn-save:disabled { background: var(--slot-empty); color: var(--text-faint); cursor: not-allowed; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div>
+    <div class="logo">SK<span>ID</span></div>
+    <div class="search-box"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="10" r="6"/><line x1="20" y1="20" x2="14.5" y2="14.5"/></svg></span>Search</div>
+
+    <div class="nav-group">
+      <div class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h3v-6h6v6h3a1 1 0 0 0 1-1V9.5"/></svg></span> Dashboard <span class="chev">▾</span></div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.5-5h13L20 9"/><path d="M4 9a2.67 2.67 0 0 0 5.33 0 2.67 2.67 0 0 0 5.34 0A2.67 2.67 0 0 0 20 9"/><path d="M5 12v8h14v-8"/><path d="M10 20v-4h4v4"/></svg></span> Venues <span class="chev">▾</span></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-item active-group"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg></span> Schedule <span class="chev">▴</span></div>
+      <div class="sub-nav">
+        <div class="sub-item active" data-tab="planning">Planning</div>
+        <div class="sub-item" data-tab="scheduled">Scheduled</div>
+        <div class="sub-item" data-tab="done">Photoshoot Done</div>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6a1 1 0 0 1 1-1h4l2 2h10a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6z"/></svg></span> Photographers <span class="chev">▾</span></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v18"/><path d="M5 4h11l-2 4 2 4H5"/></svg></span> Reporting <span class="chev">▾</span></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.3"/><path d="M15.5 14c2.5.2 4.5 2 4.5 6"/></svg></span> Users <span class="chev">▾</span></div>
+    </div>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.3"/><line x1="5.3" y1="5.3" x2="8.6" y2="8.6"/><line x1="15.4" y1="15.4" x2="18.7" y2="18.7"/><line x1="18.7" y1="5.3" x2="15.4" y2="8.6"/><line x1="8.6" y1="15.4" x2="5.3" y2="18.7"/></svg></span> Support</div>
+    <div class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a7.4 7.4 0 0 0 0-2l1.9-1.3-1.5-2.6-2.2.7a7.4 7.4 0 0 0-1.7-1l-.3-2.3h-3l-.3 2.3a7.4 7.4 0 0 0-1.7 1l-2.2-.7-1.5 2.6L8.6 11a7.4 7.4 0 0 0 0 2l-1.9 1.3 1.5 2.6 2.2-.7a7.4 7.4 0 0 0 1.7 1l.3 2.3h3l.3-2.3a7.4 7.4 0 0 0 1.7-1l2.2.7 1.5-2.6z"/></svg></span> Settings</div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="page-header">
+    <div>
+      <h1>Schedule</h1>
+      <p class="subtitle" id="pageSubtitle">Venues being scheduled, from first contact to confirmed date.</p>
+    </div>
+    <button class="btn-new">＋ New</button>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="planning">Planning</div>
+    <div class="tab" data-tab="scheduled">Scheduled</div>
+    <div class="tab" data-tab="done">Photoshoot Done</div>
+  </div>
+
+  <div class="toolbar" id="planningToolbar">
+    <div class="tb-filter" data-tb-filter="owner">
+      <button class="dropdown-btn" data-tb-filter-btn="owner">Owner<span class="dd-badge" id="ownerBadge"></span> <span style="opacity:.5">▾</span></button>
+      <div class="tb-filter-menu" id="ownerFilterMenu"></div>
+    </div>
+    <div class="tb-filter" data-tb-filter="photographer">
+      <button class="dropdown-btn" data-tb-filter-btn="photographer">Photographer<span class="dd-badge" id="photographerBadge"></span> <span style="opacity:.5">▾</span></button>
+      <div class="tb-filter-menu" id="photographerFilterMenu"></div>
+    </div>
+    <div class="toolbar-search">🔍 <input type="text" placeholder="Search" autocomplete="off" /></div>
+    <div class="filter-btn">☰ Filters</div>
+    <div class="view-toggle" id="viewToggle">
+      <button class="view-btn" data-view="day">Day</button>
+      <button class="view-btn active" data-view="week">Week</button>
+      <button class="view-btn" data-view="month">Month</button>
+    </div>
+  </div>
+
+  <div class="content-row">
+    <div class="timeline" id="timeline"></div>
+    <div class="timeline" id="scheduledTimeline" style="display:none"></div>
+
+    <aside class="calendar-panel" id="calendarPanel">
+      <div class="calendar-header">
+        <span class="nav-arrow">‹</span>
+        <span class="month-title" id="calMonthTitle">November 2026</span>
+        <span class="nav-arrow">›</span>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+      <div class="calendar-legend" id="calendarLegend"></div>
+    </aside>
+  </div>
+</main>
+
+<div class="panel-overlay" id="panelOverlay">
+  <div class="side-panel">
+    <div class="panel-header">
+      <div class="panel-header-top">
+        <div>
+          <div class="panel-title">Add venues</div>
+          <div class="panel-subtitle" id="panelSubtitle">—</div>
+        </div>
+        <button class="panel-close" id="panelClose">✕</button>
+      </div>
+    </div>
+
+    <div class="panel-body">
+      <div class="panel-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="10" r="6"/><line x1="20" y1="20" x2="14.5" y2="14.5"/></svg>
+        <input type="text" id="panelSearch" placeholder="Search businesses..." autocomplete="off" />
+        <div class="tb-filter" id="panelCityFilterWrap" style="margin-left:8px;">
+          <button class="dropdown-btn" id="panelCityFilterBtn" type="button">City<span class="dd-badge" id="panelCityBadge"></span> <span style="opacity:.5">▾</span></button>
+          <div class="tb-filter-menu" id="panelCityFilterMenu"></div>
+        </div>
+      </div>
+      <div class="panel-quick-filters" id="panelQuickFilters">
+        <button class="quick-filter active" data-quick="nearby">Nearby</button>
+        <button class="quick-filter" data-quick="new">Recently added</button>
+        <button class="quick-filter" data-quick="ready">Menu ready</button>
+        <button class="quick-filter" data-quick="all">All waiting</button>
+      </div>
+      <table class="biz-table">
+        <thead>
+          <tr>
+            <th class="col-check"></th>
+            <th>Name</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>Menu Size</th>
+            <th>Date Added</th>
+            <th>Menu Build Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="panelTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="panel-footer">
+      <div class="panel-progress">
+        <div class="panel-progress-top">
+          <span>Slots used</span>
+          <span class="panel-progress-label"><span id="progressText">0/3</span></span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+      <div class="panel-footer-actions">
+        <button class="btn-outline" id="panelCancel">Cancel</button>
+        <button class="btn-save" id="panelSave">Add to schedule</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12.5 9.5 18 20 6"/></svg>
+  <span id="toastText">Phone number copied</span>
+</div>
+
+<script>
+/* ---------------- Data ---------------- */
+
+const SLOT_COST = { S: 1, M: 1, L: 2, XL: 3 };
+const MAX_SLOTS = 3;
+
+const PHOTOGRAPHERS = {
+  "Maya Brenner":        "#f9a8d4", // pink
+  "Ido Rafaeli":         "#f87171", // red
+  "Lior Avidan":      "#4ade80", // green
+  "Tali Moran":         "#c4967c", // light brown
+  "Amit Zohar":       "#a3e635", // yellow-green
+  "Omer Harel":        "#15803d", // bottle green
+  "Daniel Barkan": "#38bdf8", // sky blue
+  "Uri Sasson":    "#a855f7", // purple
+};
+// Some photographers only shoot in a specific region — shown next to their
+// name in the Photographer filter so coordinators know who's eligible where.
+const PHOTOGRAPHER_REGION = {
+  "Omer Harel": "North only",
+  "Uri Sasson": "Eilat only",
+};
+
+const ICON_PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-7.5 7-12a7 7 0 1 0-14 0c0 4.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.3"/></svg>';
+const ICON_USER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg>';
+const ICON_PHONE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3.5h3l1.5 4-2 1.5a12 12 0 0 0 5.5 5.5l1.5-2 4 1.5v3c0 1.1-.9 2-2 2C10.6 19 5 13.4 5 6c0-1.1.9-2 1.5-2.5z"/></svg>';
+const ICON_COPY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+const ICON_NOTE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h13l3 3v13H4z"/><path d="M17 4v3h3"/><line x1="7.5" y1="10.5" x2="15" y2="10.5"/><line x1="7.5" y1="14" x2="15" y2="14"/></svg>';
+const ICON_CHEVRON_DOWN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+const ICON_FILE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
+const ICON_CHECK_CIRCLE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="8 12.5 11 15.5 16 9"/></svg>';
+const ICON_CLOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>';
+const ICON_TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>';
+
+const CAT_TAG = {
+  restaurant: { label: "Restaurant", color: "#2563eb", bg: "#eff6ff" },
+  retail:     { label: "Retail", color: "#ea580c", bg: "#fff7ed" },
+};
+
+// Status of building the business's menu/page inside the app (not the
+// scheduling status) — shown in the "Add businesses" panel table.
+const MENU_BUILD_STATUS = {
+  ready:      { label: "Ready",          color: "#15803d", bg: "#dcfce7" },
+  working:    { label: "Working on it",  color: "#b45309", bg: "#fef3c7" },
+  not_ready:  { label: "Not ready",      color: "#dc2626", bg: "#fef2f2" },
+};
+
+const OWNER_COLORS = {
+  "Alex": "#5b6b8c", // slate-navy (lightened — the old #44415a read as near-black in a 9px swatch)
+  "Sam":   "#b0708a", // muted rose (desaturated, distinct from photographer pink/red)
+  "Noam":  "#8676ac", // muted violet
+};
+// Darker variants of the same hues, used where the owner color is the TEXT
+// color on a light gray chip — needs more contrast than the small swatches do.
+const OWNER_TEXT_COLORS = {
+  "Alex": "#3c4863",
+  "Sam":   "#8a4961",
+  "Noam":  "#5f5280",
+};
+
+function card(photographer, businesses, location, owner) {
+  return { photographer, avatarColor: PHOTOGRAPHERS[photographer], businesses, location, owner: owner || "Alex" };
+}
+
+const days = [
+  {
+    label: "Tomorrow", sub: "Tuesday",
+    cards: [
+      card("Maya Brenner", [
+        { size: "M", time: "10:00", name: "Amber Table", cat: "restaurant", phone: "035550100", contact: "Avi Sharabi", address: "21 Ussishkin St", status: "Closed", note: "" },
+        { size: "M", time: "13:00", name: "Harbor Table", cat: "restaurant", phone: "035550101", contact: "Ziv Sharabi", address: "8 HaPardes St", status: "Closed", note: "" },
+      ], "Ramat HaSharon"),
+      card("Ido Rafaeli", [
+        { size: "S", time: "10:00", name: "Sunset Table", cat: "restaurant", phone: "035550102", contact: "Rina Orenstein", address: "30 Ibn Gabirol St", status: "Closed", note: "" },
+        { size: "M", time: "13:00", name: "Sage Table", cat: "restaurant", phone: "035550103", contact: "Eli Orenstein", address: "23 Menachem Begin Rd", status: "Closed", note: "" },
+        { size: "M", time: "16:00", name: "Maple Kitchen", cat: "restaurant", phone: "035550104", contact: "Moran Kedem", address: "4 Ben Yehuda St", status: "Closed", note: "" }
+      ], "Tel Aviv-Yafo", "Noam"),
+    ]
+  },
+  {
+    label: "Nov 18", sub: "Wednesday",
+    cards: [
+      card("Ido Rafaeli", [
+        { size: "L", time: "10:00", name: "Willow Kitchen", cat: "restaurant", phone: "035550105", contact: "Roy Kedem", address: "9 HaEshel St", status: "Contacted", note: "" },
+      ], "Rishon LeZion", "Sam"),
+      card("Lior Avidan", [
+        { size: "M", time: "10:00", name: "Cinder Kitchen", cat: "restaurant", phone: "035550106", contact: "Lia Bar-Lev", address: "17 Smilansky St", status: "Contacted", note: "" }
+      ], "Netanya"),
+      card("Tali Moran", []),
+    ]
+  },
+  {
+    label: "Nov 19", sub: "Thursday",
+    cards: [
+      card("Maya Brenner", []),
+    ]
+  },
+  {
+    label: "Nov 22", sub: "Sunday",
+    cards: [
+      card("Ido Rafaeli", [
+        { size: "L", time: "10:00", name: "Wren Kitchen", cat: "restaurant", phone: "035550107", contact: "Gil Bar-Lev", address: "8 Sokolov St", status: "Optional", note: "" },
+        { size: "S", time: "13:00", name: "Clover Bistro", cat: "restaurant", phone: "035550108", contact: "Shir Navon", address: "19 HaBanim St", status: "Optional", note: "" },
+      ], "Herzliya", "Sam"),
+      card("Maya Brenner", []),
+    ]
+  },
+  {
+    label: "Nov 23", sub: "Monday",
+    cards: [
+      card("Tali Moran", [
+        { size: "M", time: "10:00", name: "Meadow Bistro", cat: "restaurant", phone: "035550109", contact: "Nitzan Navon", address: "6 Hameyasdim St", status: "Optional", note: "" },
+        { size: "S", time: "13:00", name: "Quince Bistro", cat: "retail", phone: "035550110", contact: "Noy Ashkenazi", address: "19 HaGiborim St", status: "Optional", note: "" },
+      ], "Pardes Hana"),
+    ]
+  },
+  {
+    label: "Nov 24", sub: "Tuesday",
+    cards: [
+      card("Lior Avidan", []),
+      card("Ido Rafaeli", []),
+    ]
+  },
+  {
+    label: "Nov 25", sub: "Wednesday",
+    cards: [
+      card("Maya Brenner", [
+        { size: "S", time: "10:00", name: "Lantern Grill", cat: "restaurant", phone: "035550111", contact: "Dana Hermon", address: "11 Nordau St", status: "Optional", note: "" }
+      ], "Hod HaSharon"),
+      card("Tali Moran", []),
+    ]
+  },
+];
+
+/* ---------------- Render ---------------- */
+
+function slotsUsed(businesses) {
+  return businesses.reduce((sum, b) => sum + (SLOT_COST[b.size] || 1), 0);
+}
+
+function isCardAllClosed(card) {
+  const isEmpty = card.businesses.length === 0;
+  if (isEmpty) return false;
+  const isFull = slotsUsed(card.businesses) >= MAX_SLOTS;
+  return isFull && card.businesses.every(b => b.status === "Closed");
+}
+
+function spawnConfetti(el) {
+  if (!el) return;
+  const rect = el.getBoundingClientRect();
+  const colors = ["#2563eb", "#15803d", "#f59e0b", "#db2777", "#7c3aed"];
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  for (let i = 0; i < 14; i++) {
+    const piece = document.createElement("div");
+    piece.className = "confetti-piece";
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 16 + Math.random() * 22;
+    piece.style.setProperty("--dx", (Math.cos(angle) * dist) + "px");
+    piece.style.setProperty("--dy", (Math.sin(angle) * dist) + "px");
+    piece.style.background = colors[i % colors.length];
+    piece.style.left = cx + "px";
+    piece.style.top = cy + "px";
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 700);
+  }
+}
+
+const STATUS_DOT_COLOR = {
+  Optional: "#a1a1aa",
+  Contacted: "#f59e0b",
+  Closed: "#22c55e",
+};
+
+function renderSlotDots(businesses) {
+  // Accepts either a businesses array (status-aware pills) or a plain
+  // used-count (legacy/empty-card path) — same total width either way,
+  // so the indicator never changes size.
+  let html = '<div class="slot-dots">';
+  if (Array.isArray(businesses)) {
+    let cellsUsed = 0;
+    businesses.forEach(b => {
+      const cost = Math.min(SLOT_COST[b.size] || 1, MAX_SLOTS - cellsUsed);
+      if (cost <= 0) return;
+      const color = STATUS_DOT_COLOR[b.status] || STATUS_DOT_COLOR.Optional;
+      const widthPx = cost * 6 + (cost - 1) * 3;
+      html += `<div class="slot-dot filled" style="width:${widthPx}px;background:${color}"></div>`;
+      cellsUsed += cost;
+    });
+    for (let i = cellsUsed; i < MAX_SLOTS; i++) {
+      html += `<div class="slot-dot"></div>`;
+    }
+  } else {
+    const used = businesses;
+    for (let i = 0; i < MAX_SLOTS; i++) {
+      html += `<div class="slot-dot ${i < used ? 'filled' : ''}"></div>`;
+    }
+  }
+  html += '</div>';
+  return html;
+}
+
+const STATUS_OPTIONS = ["Optional", "Contacted", "Closed"];
+
+function renderCard(card, dayIdx, cardIdx) {
+  if (card.movedToScheduled) {
+    return `
+      <div class="card card-moved-placeholder">
+        <div class="moved-message">
+          <span class="moved-check">${ICON_CHECK_CIRCLE}</span>
+          <div class="moved-text">
+            This shoot is now in <strong>Scheduled</strong>. <span class="moved-link" data-view-scheduled="${dayIdx}:${cardIdx}">Open Scheduled</span>
+          </div>
+          <button class="btn-undo" data-undo-move="${dayIdx}:${cardIdx}">Undo</button>
+        </div>
+      </div>`;
+  }
+  const used = slotsUsed(card.businesses);
+  const isEmpty = card.businesses.length === 0;
+  const isFull = used >= MAX_SLOTS;
+  const isAllClosed = !isEmpty && isFull && card.businesses.every(b => b.status === "Closed");
+
+  let bizHtml = "";
+  if (!isEmpty) {
+    // Keep rows ordered by time so a manually-typed time always lands in the
+    // right place automatically; businesses with no time yet sort last.
+    card.businesses.sort((a, b) => (a.time || "99:99").localeCompare(b.time || "99:99"));
+    bizHtml += '<div class="biz-list">';
+    card.businesses.forEach((b, bi) => {
+      const statusOpts = STATUS_OPTIONS.map(s =>
+        `<option value="${s}" ${b.status === s ? "selected" : ""}>${s}</option>`
+      ).join("");
+      const rowKey = `${dayIdx}:${cardIdx}:${bi}`;
+      const isOpen = expandedRows.has(rowKey);
+      bizHtml += `
+        <div class="biz-row">
+          <div class="biz-row-main" data-toggle-row="${rowKey}">
+            <button class="row-toggle ${isOpen ? 'open' : ''}" data-toggle-row="${rowKey}" title="${isOpen ? 'Hide details' : 'Show address, contact & phone'}">${ICON_CHEVRON_DOWN}</button>
+            <span class="size-badge">${b.size}</span>
+            ${editingTimeKey === rowKey
+              ? `<input type="text" class="biz-time-input" data-time-input="${rowKey}" value="${b.time}" placeholder="00:00" autocomplete="off" />`
+              : `<span class="biz-time ${!b.time ? 'is-unset' : ''}" data-edit-time="${rowKey}" title="Click to set time">${b.time || "--:--"}</span>`}
+            <span class="biz-name-wrap">
+              <span class="biz-name">${b.name}</span>
+            </span>
+            <span class="status-select-wrap status-${b.status}">
+              <span class="status-label status-${b.status}">${b.status}</span>
+              <select class="status-select" data-status-change="${rowKey}">
+                ${statusOpts}
+              </select>
+            </span>
+            <button class="note-btn" data-note-btn="${rowKey}" title="${b.note ? b.note.replace(/"/g, '&quot;') : 'Add note'}">
+              <span class="biz-icon">${ICON_NOTE}</span>${b.note ? '<span class="note-dot"></span>' : ''}
+            </button>
+          </div>
+          ${isOpen ? `
+          <div class="biz-row-details">
+            <div class="biz-details-info">
+              <span class="biz-contact"><span class="biz-icon">${ICON_USER}</span>${b.contact || "—"}</span>
+              <span class="biz-phone" data-copy-phone="${b.phone}" title="Copy phone number"><span class="biz-icon">${ICON_PHONE}</span>${b.phone} <span class="copy-icon">${ICON_COPY}</span></span>
+              <span class="biz-address"><span class="biz-icon">${ICON_PIN}</span>${b.address ? b.address + (card.location ? ", " + card.location : "") : "—"}</span>
+              ${editingNoteKey === rowKey
+                ? `<input type="text" class="biz-note-input" data-note-input="${rowKey}" value="${b.note ? b.note.replace(/"/g, '&quot;') : ''}" placeholder="Add a note..." autocomplete="off" />`
+                : (b.note ? `<span class="biz-note-preview">${b.note}</span>` : "")}
+            </div>
+            <div class="biz-details-actions">
+              <button class="row-delete" data-delete-row="${rowKey}" title="Remove ${b.name} from this shoot">${ICON_TRASH}<span>Remove</span></button>
+              <span class="biz-menu-link" data-view-menu="${rowKey}"><span class="biz-icon">${ICON_FILE}</span>View menu</span>
+              ${b.status === "Closed" ? `
+                <button class="btn-summary" data-send-summary="${rowKey}" ${summarySentKeys.has(rowKey) ? "disabled" : ""}>
+                  Send summary${summarySentKeys.has(rowKey) ? ' <span class="summary-sent-check">✓</span>' : ""}
+                </button>` : ""}
+            </div>
+          </div>` : ""}
+        </div>`;
+    });
+    if (!isFull) {
+      bizHtml += `
+        <button class="add-slot-row" data-open-panel="${dayIdx}:${cardIdx}">
+          <span class="slot-plus">+</span> Add Venue <span style="opacity:.7">· ${MAX_SLOTS - used} slot${MAX_SLOTS - used === 1 ? '' : 's'} left</span>
+        </button>`;
+    }
+    bizHtml += '</div>';
+  }
+
+  const middle = isEmpty
+    ? `<button class="add-slot-row" data-open-panel="${dayIdx}:${cardIdx}">
+         <span class="slot-plus">+</span> Add Venue <span style="opacity:.7">· ${MAX_SLOTS} slots left</span>
+       </button>`
+    : bizHtml;
+
+  const bottomButtons = isEmpty
+    ? `<div class="btn-row">
+         <button class="btn-danger">Delete</button>
+         ${renderAddSplit(dayIdx, cardIdx)}
+       </div>`
+    : `<div class="btn-row">
+         ${!isFull ? renderAddSplit(dayIdx, cardIdx) : ""}
+         <button class="${isAllClosed ? 'btn-move' : 'btn-light'}" data-move-scheduled="${dayIdx}:${cardIdx}">Move To Scheduled</button>
+       </div>`;
+
+  const assigneeKey = `${dayIdx}:${cardIdx}`;
+  const assignee = isEmpty ? "" : `
+    <div class="assignee-wrap">
+      <button type="button" class="assignee-chip" style="color:${OWNER_TEXT_COLORS[card.owner] || OWNER_TEXT_COLORS.Alex}" data-assignee-toggle="${assigneeKey}">${card.owner}<span class="chip-chevron">${ICON_CHEVRON_DOWN}</span></button>
+      <div class="assignee-menu" data-assignee-menu="${assigneeKey}">
+        ${Object.keys(OWNER_COLORS).map(name => `
+          <button type="button" data-assignee-pick="${assigneeKey}:${name}">
+            <span class="swatch" style="background:${OWNER_COLORS[name]}"></span>${name}
+          </button>
+        `).join("")}
+      </div>
+    </div>`;
+
+  const topRow = isEmpty
+    ? `<div class="card-top">
+         <div class="needs-scheduling"><span class="dot"></span>Needs scheduling</div>
+         <div class="slot-counter">${renderSlotDots(card.businesses)}</div>
+       </div>
+       <div class="card-photographer" style="margin-top:10px">
+         <div class="avatar" style="background:${card.avatarColor}"></div>
+         <div>
+           <span class="photographer-name">${card.photographer}</span>
+           ${card.location ? `<span style="color:var(--text-muted);font-weight:500;margin-left:8px;font-size:14px">${card.location}</span>` : ""}
+         </div>
+       </div>`
+    : `<div class="card-top">
+         <div class="card-photographer">
+           <div class="avatar" style="background:${card.avatarColor}"></div>
+           <div>
+             <span class="photographer-name">${card.photographer}</span>
+             ${card.location ? `<span style="color:var(--text-muted);font-weight:500;margin-left:8px;font-size:14px">${card.location}</span>` : ""}
+           </div>
+         </div>
+         <div style="display:flex;align-items:center;gap:10px">
+           <div class="slot-counter">${isAllClosed ? '<span class="ready-check">✓</span>' : renderSlotDots(card.businesses)}</div>
+         </div>
+       </div>`;
+
+  return `
+    <div class="card ${isEmpty ? 'is-empty' : ''} ${isAllClosed ? 'is-ready' : ''}">
+      ${topRow}
+      ${middle}
+      <div class="card-bottom">
+        ${assignee}
+        ${bottomButtons}
+      </div>
+    </div>`;
+}
+
+let scheduleView = "week"; // day | week | month
+let ownerFilter = new Set(); // empty = no filter
+let photographerFilter = new Set(); // empty = no filter
+let openToolbarFilter = null; // "owner" | "photographer" | null
+let openAssigneeKey = null; // "dayIdx:cardIdx" | null
+
+function matchesFilters(card) {
+  if (ownerFilter.size && !ownerFilter.has(card.owner)) return false;
+  if (photographerFilter.size && !photographerFilter.has(card.photographer)) return false;
+  return true;
+}
+let editingTimeKey = null; // "dayIdx:cardIdx:bizIdx" while a time input is open
+let expandedRows = new Set(); // "dayIdx:cardIdx:bizIdx" keys showing address/contact/phone
+let expandedScheduledRows = new Set(); // "dateIdx:cardIdx:vi" keys showing address/contact/phone on the Scheduled page
+let editingNoteKey = null; // "dayIdx:cardIdx:bizIdx" while a note input is open
+let addMenuOpenKey = null; // "dayIdx:cardIdx" while the Add split-button menu is open
+let summarySentKeys = new Set(); // "dayIdx:cardIdx:bizIdx" rows whose conversation summary was sent
+let scheduleSentKeys = new Set(); // "dateIdx:cardIdx" scheduled cards whose Send Schedule was sent at least once
+let scheduleJustSentKey = null; // "dateIdx:cardIdx" briefly set right after sending, to play a one-off animation
+let pendingSummaryKey = null; // rowKey awaiting confirm in the confirm modal
+
+function renderAddSplit(dayIdx, cardIdx) {
+  const key = `${dayIdx}:${cardIdx}`;
+  return `<button class="btn-light" data-auto-add="${key}" title="Auto-add a fitting waiting venue">Auto-add</button>`;
+}
+
+function remainingSlots(card) {
+  return MAX_SLOTS - slotsUsed(card.businesses);
+}
+
+function pickAutoAddCandidate(card) {
+  const remaining = remainingSlots(card);
+  if (remaining <= 0) return null;
+  const fits = (b) => (SLOT_COST[b.size] || 1) <= remaining;
+  let pool = READY_BUSINESSES.filter(fits);
+  if (card.location) {
+    const local = pool.filter(b => b.city === card.location);
+    if (local.length) pool = local;
+  }
+  const ready = pool.filter(b => b.menuStatus === "ready");
+  return ready[0] || pool[0] || null;
+}
+
+function render() {
+  const timeline = document.getElementById("timeline");
+  const hasFilter = ownerFilter.size > 0 || photographerFilter.size > 0;
+  const baseDays = scheduleView === "day" ? days.slice(0, 1) : days;
+  const visibleDays = hasFilter
+    ? baseDays.filter(day => day.cards.some(c => matchesFilters(c)))
+    : baseDays;
+  timeline.innerHTML = visibleDays.map((day, vi) => {
+    const dayIdx = days.indexOf(day);
+    const weekDivider = (vi > 0 && day.sub === "Sunday") ? '<div class="week-divider"><span>Week of ' + day.label + '</span></div>' : "";
+    const visibleCards = day.cards
+      .map((c, ci) => ({ c, ci }))
+      .filter(({ c }) => !hasFilter || matchesFilters(c));
+    return `
+    ${weekDivider}
+    <div class="day-row" data-day-idx="${dayIdx}">
+      <div class="day-label">
+        <div class="day-main">${day.label}</div>
+        <div class="day-sub">${day.sub}</div>
+        <div class="dot-line"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="day-cards">
+        ${visibleCards.map(({ c, ci }) => renderCard(c, dayIdx, ci)).join("")}
+      </div>
+    </div>
+  `;
+  }).join("");
+  if (typeof refreshCalendar === "function") refreshCalendar();
+  if (editingTimeKey) {
+    const input = timeline.querySelector(`[data-time-input="${editingTimeKey}"]`);
+    if (input) { input.focus(); input.select(); }
+  }
+  if (editingNoteKey) {
+    const input = timeline.querySelector(`[data-note-input="${editingNoteKey}"]`);
+    if (input) { input.focus(); input.select(); }
+  }
+  if (openAssigneeKey) {
+    const menu = timeline.querySelector(`[data-assignee-menu="${openAssigneeKey}"]`);
+    if (menu) menu.classList.add("open");
+  }
+}
+
+render();
+
+document.getElementById("viewToggle").addEventListener("click", (e) => {
+  const btn = e.target.closest(".view-btn");
+  if (!btn) return;
+  scheduleView = btn.dataset.view;
+  document.querySelectorAll("#viewToggle .view-btn").forEach(b => b.classList.toggle("active", b === btn));
+  render();
+});
+
+/* ---------------- Toolbar Owner / Photographer filters ---------------- */
+
+function renderToolbarFilterMenus() {
+  const ownerMenu = document.getElementById("ownerFilterMenu");
+  ownerMenu.innerHTML = Object.keys(OWNER_COLORS).map(name => `
+    <label>
+      <input type="checkbox" data-owner-opt="${name}" ${ownerFilter.has(name) ? "checked" : ""} />
+      <span class="swatch" style="background:${OWNER_COLORS[name]}"></span>${name}
+    </label>
+  `).join("");
+
+  const photoMenu = document.getElementById("photographerFilterMenu");
+  photoMenu.innerHTML = Object.keys(PHOTOGRAPHERS).map(name => `
+    <label>
+      <input type="checkbox" data-photographer-opt="${name}" ${photographerFilter.has(name) ? "checked" : ""} />
+      <span class="swatch" style="background:${PHOTOGRAPHERS[name]}"></span>${name}
+    </label>
+  `).join("");
+
+  document.getElementById("ownerBadge").textContent = ownerFilter.size ? String(ownerFilter.size) : "";
+  document.getElementById("photographerBadge").textContent = photographerFilter.size ? String(photographerFilter.size) : "";
+}
+renderToolbarFilterMenus();
+
+document.querySelectorAll("[data-tb-filter-btn]").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const which = btn.dataset.tbFilterBtn;
+    openToolbarFilter = openToolbarFilter === which ? null : which;
+    document.querySelectorAll(".tb-filter-menu").forEach(m => {
+      m.classList.toggle("open", m.id === `${openToolbarFilter}FilterMenu`);
+    });
+  });
+});
+
+document.getElementById("ownerFilterMenu").addEventListener("click", (e) => e.stopPropagation());
+document.getElementById("photographerFilterMenu").addEventListener("click", (e) => e.stopPropagation());
+
+document.getElementById("ownerFilterMenu").addEventListener("change", (e) => {
+  const name = e.target.dataset.ownerOpt;
+  if (!name) return;
+  if (e.target.checked) ownerFilter.add(name); else ownerFilter.delete(name);
+  document.getElementById("ownerBadge").textContent = ownerFilter.size ? String(ownerFilter.size) : "";
+  render();
+});
+
+document.getElementById("photographerFilterMenu").addEventListener("change", (e) => {
+  const name = e.target.dataset.photographerOpt;
+  if (!name) return;
+  if (e.target.checked) photographerFilter.add(name); else photographerFilter.delete(name);
+  document.getElementById("photographerBadge").textContent = photographerFilter.size ? String(photographerFilter.size) : "";
+  render();
+});
+
+document.addEventListener("click", () => {
+  if (openToolbarFilter) {
+    openToolbarFilter = null;
+    document.querySelectorAll(".tb-filter-menu").forEach(m => m.classList.remove("open"));
+  }
+  if (openAssigneeKey) {
+    openAssigneeKey = null;
+    document.querySelectorAll(".assignee-menu").forEach(m => m.classList.remove("open"));
+  }
+});
+
+document.getElementById("timeline").addEventListener("click", (e) => {
+  const pick = e.target.closest("[data-assignee-pick]");
+  if (pick) {
+    e.stopPropagation();
+    const [dayIdx, cardIdx, name] = pick.dataset.assigneePick.split(":");
+    days[Number(dayIdx)].cards[Number(cardIdx)].owner = name;
+    openAssigneeKey = null;
+    render();
+    return;
+  }
+  const toggle = e.target.closest("[data-assignee-toggle]");
+  if (toggle) {
+    e.stopPropagation();
+    const key = toggle.dataset.assigneeToggle;
+    openAssigneeKey = openAssigneeKey === key ? null : key;
+    render();
+  }
+});
+
+/* ---------------- Calendar panel ---------------- */
+
+// Scans the `days` list (Nov 2026 entries only) and buckets each calendar
+// day by the state of its cards: needs scheduling (has an empty card),
+// ready (has a card where every business is Closed), or just has activity.
+// For each calendar day (by day-of-month number), which photographers still
+// have an open slot that day — i.e. at least one of their cards on that day
+// is not yet full. A day with no modeled cards has no entry.
+function computeAvailableByDay() {
+  const availableByDay = new Map(); // num -> Set<photographer>
+
+  days.forEach(day => {
+    let num;
+    if (day.label === "Tomorrow") num = 17; // "Tomorrow" = Nov 17 in this prototype's calendar
+    else {
+      const m = /^Nov (\d+)$/.exec(day.label);
+      if (!m) return; // different month
+      num = Number(m[1]);
+    }
+    const set = availableByDay.get(num) || new Set();
+    day.cards.forEach(c => {
+      if (slotsUsed(c.businesses) < MAX_SLOTS) set.add(c.photographer);
+    });
+    availableByDay.set(num, set);
+  });
+
+  return availableByDay;
+}
+
+function renderCalendarLegend() {
+  const legend = document.getElementById("calendarLegend");
+  legend.innerHTML = Object.keys(PHOTOGRAPHERS).map(name =>
+    `<span class="legend-item"><span class="swatch" style="background:${PHOTOGRAPHERS[name]}"></span>${name}</span>`
+  ).join("");
+}
+
+function renderCalendar(year, monthIndex0, availableByDay) {
+  const dowLabels = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+  const firstOfMonth = new Date(year, monthIndex0, 1);
+  const daysInMonth = new Date(year, monthIndex0 + 1, 0).getDate();
+  const daysInPrevMonth = new Date(year, monthIndex0, 0).getDate();
+
+  // JS getDay(): 0=Sun..6=Sat. Sun-first index (0=Sun..6=Sat).
+  const firstDow = firstOfMonth.getDay();
+
+  const cells = [];
+
+  for (let i = firstDow - 1; i >= 0; i--) {
+    cells.push({ num: daysInPrevMonth - i, muted: true });
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    cells.push({
+      num: d,
+      muted: false,
+      available: availableByDay.get(d) || null,
+    });
+  }
+  let nextNum = 1;
+  while (cells.length % 7 !== 0) {
+    cells.push({ num: nextNum++, muted: true });
+  }
+
+  const grid = document.getElementById("calendarGrid");
+  let html = dowLabels.map(l => `<div class="dow">${l}</div>`).join("");
+  cells.forEach(c => {
+    const cls = c.muted ? "muted" : (c.available && c.available.size ? "has-availability" : "");
+    const bars = (!c.muted && c.available && c.available.size)
+      ? `<div class="avail-bars" title="${Array.from(c.available).join(', ')} available">${
+          Array.from(c.available).map(name => `<span class="avail-bar" style="background:${PHOTOGRAPHERS[name] || '#ccc'}"></span>`).join("")
+        }</div>`
+      : "";
+    html += `
+      <div class="cal-day ${cls}" ${c.muted ? "" : `data-cal-num="${c.num}"`}>
+        <span class="num-wrap">${c.num}</span>
+        ${bars}
+      </div>`;
+  });
+  grid.innerHTML = html;
+
+  document.getElementById("calMonthTitle").textContent =
+    firstOfMonth.toLocaleString("en-US", { month: "long", year: "numeric" });
+}
+
+function refreshCalendar() {
+  renderCalendar(2026, 10, computeAvailableByDay());
+}
+
+renderCalendarLegend();
+refreshCalendar();
+
+/* ---------------- Scheduled tab (confirmed shoots, read-only) ---------------- */
+
+const SCHEDULED_CARDS = [
+  { date: "Mon, Nov 16", cards: [
+    { photographer: "Maya Brenner", location: "Tel Aviv-Yafo", owner: "Alex",
+      venues: [{ name: "Sage Bistro", time: "10:00", size: "M", contact: "Tal Shani", phone: "035550153", address: "5 Allenby St" }, { name: "Maple Grill", time: "13:00", size: "L", contact: "Hadar Shani", phone: "035550154", address: "8 Dizengoff St" }] },
+    { photographer: "Amit Zohar", location: "Tel Aviv-Yafo", owner: "Sam",
+      venues: [{ name: "Willow Grill", time: "10:00", size: "L", contact: "Itay Sharabi", phone: "035550155", address: "11 Herzl St" }, { name: "Cinder Grill", time: "13:00", size: "S", contact: "Tamar Sharabi", phone: "035550156", address: "14 HaYarkon St" }] },
+  ]},
+  { date: "Tue, Nov 17", cards: [
+    { photographer: "Ido Rafaeli", location: "Ramat HaSharon", owner: "Sam",
+      venues: [{ name: "Wren Grill", time: "10:00", size: "XL", contact: "Ben Orenstein", phone: "035550157", address: "17 Rothschild Blvd" }] },
+  ]},
+  { date: "Wed, Nov 18", cards: [
+    { photographer: "Lior Avidan", location: "Netanya", owner: "Noam",
+      venues: [{ name: "Clover Bakery", time: "10:00", size: "L", contact: "Nitzan Sharabi", phone: "035550158", address: "20 Bialik St" }, { name: "Meadow Bakery", time: "13:00", size: "S", contact: "Yuval Orenstein", phone: "035550159", address: "23 Ben Yehuda St" }] },
+    { photographer: "Daniel Barkan", location: "Netanya", owner: "Alex",
+      venues: [{ name: "Quince Bakery", time: "10:00", size: "M", contact: "Omri Kedem", phone: "035550160", address: "26 Jabotinsky St" }, { name: "Lantern Deli", time: "13:00", size: "M", contact: "Avi Bar-Lev", phone: "035550161", address: "29 Weizmann St" }, { name: "Copper Deli", time: "16:00", size: "S", contact: "Ziv Bar-Lev", phone: "035550162", address: "32 HaNassi Blvd" }] },
+  ]},
+  { date: "Thu, Nov 19", cards: [
+    { photographer: "Tali Moran", location: "Pardes Hana", owner: "Alex",
+      venues: [{ name: "Basil Deli", time: "10:00", size: "M", contact: "Rina Navon", phone: "035550163", address: "35 Arlozorov St" }, { name: "Umber Deli", time: "13:00", size: "S", contact: "Eli Navon", phone: "035550164", address: "38 King George St" }, { name: "Saffron Cantina", time: "16:00", size: "S", contact: "Moran Ashkenazi", phone: "035550165", address: "41 Sderot Yerushalayim" }] },
+  ]},
+  { date: "Sat, Nov 21", cards: [
+    { photographer: "Maya Brenner", location: "Holon", owner: "Sam",
+      venues: [{ name: "Fig Cantina", time: "10:00", size: "S", contact: "Roy Ashkenazi", phone: "035550166", address: "44 Montefiore St" }, { name: "Pebble Cantina", time: "13:00", size: "L", contact: "Lia Hermon", phone: "035550167", address: "47 Nordau Blvd" }] },
+    { photographer: "Omer Harel", location: "Haifa", owner: "Noam",
+      venues: [{ name: "Juniper Social", time: "10:00", size: "L", contact: "Gil Hermon", phone: "035550168", address: "50 Frishman St" }, { name: "Ivory Social", time: "13:00", size: "S", contact: "Shir Tzur", phone: "035550169", address: "53 Pinsker St" }] },
+  ]},
+  { date: "Sun, Nov 22", cards: [
+    { photographer: "Ido Rafaeli", location: "Rishon LeZion", owner: "Noam",
+      venues: [{ name: "Velvet Social", time: "10:00", size: "L", contact: "Nitzan Tzur", phone: "035550170", address: "56 Ahad Ha'am St" }, { name: "Thyme Social", time: "13:00", size: "M", contact: "Noy Vardi", phone: "035550171", address: "59 Gordon St" }] },
+  ]},
+  { date: "Tue, Nov 24", cards: [
+    { photographer: "Lior Avidan", location: "Hod HaSharon", owner: "Alex",
+      venues: [{ name: "Olive Larder", time: "10:00", size: "M", contact: "Dana Lavi", phone: "035550172", address: "62 Basel St" }, { name: "Cobalt Larder", time: "13:00", size: "S", contact: "Maayan Lavi", phone: "035550173", address: "65 Shenkar St" }, { name: "Orchid Larder", time: "16:00", size: "M", contact: "Tal Peretz-Mor", phone: "035550174", address: "68 HaPalmach St" }] },
+    { photographer: "Uri Sasson", location: "Eilat", owner: "Sam",
+      venues: [{ name: "Amber Corner", time: "10:00", size: "XL", contact: "Hadar Peretz-Mor", phone: "035550175", address: "71 HaShalom Rd" }] },
+  ]},
+  { date: "Thu, Nov 26", cards: [
+    { photographer: "Tali Moran", location: "Tel Aviv-Yafo", owner: "Sam",
+      venues: [{ name: "Harbor Corner", time: "10:00", size: "L", contact: "Itay Sela", phone: "035550176", address: "74 Keren Kayemet St" }, { name: "Sunset Corner", time: "13:00", size: "S", contact: "Tamar Sela", phone: "035550177", address: "77 Carmel St" }] },
+  ]},
+];
+
+let editingScheduledNoteKey = null; // "dateIdx:cardIdx:venueIdx" while a scheduled-row note input is open
+
+function renderScheduledCard(card, keyPrefix, isToday) {
+  const statusClass = isToday ? "InProgress" : "Closed";
+  const statusText = isToday ? "In Progress" : "Closed";
+  const venueRows = card.venues.map((v, vi) => {
+    const noteKey = `${keyPrefix}:${vi}`;
+    const isEditingNote = editingScheduledNoteKey === noteKey;
+    const isOpen = expandedScheduledRows.has(noteKey);
+    return `
+    <div class="biz-row">
+      <div class="biz-row-main" data-sched-toggle-row="${noteKey}">
+        <button class="row-toggle ${isOpen ? 'open' : ''}" data-sched-toggle-row="${noteKey}" title="${isOpen ? 'Hide details' : 'Show address, contact & phone'}">${ICON_CHEVRON_DOWN}</button>
+        <span class="size-badge">${v.size}</span>
+        <span class="biz-time">${v.time}</span>
+        <span class="biz-name-wrap"><span class="biz-name">${v.name}</span></span>
+        ${isToday ? "" : `<span class="status-select-wrap status-${statusClass}"><span class="status-label status-${statusClass}">${statusText}</span></span>`}
+        <button class="note-btn" data-sched-note-btn="${noteKey}" title="${v.note ? v.note.replace(/"/g, '&quot;') : 'Add note'}">
+          <span class="biz-icon">${ICON_NOTE}</span>${v.note ? '<span class="note-dot"></span>' : ''}
+        </button>
+      </div>
+      ${isOpen ? `
+      <div class="biz-row-details">
+        <div class="biz-details-info">
+          <span class="biz-contact"><span class="biz-icon">${ICON_USER}</span>${v.contact || "—"}</span>
+          <span class="biz-phone" data-copy-phone="${v.phone}" title="Copy phone number"><span class="biz-icon">${ICON_PHONE}</span>${v.phone || "—"} <span class="copy-icon">${ICON_COPY}</span></span>
+          <span class="biz-address"><span class="biz-icon">${ICON_PIN}</span>${v.address ? v.address + (card.location ? ", " + card.location : "") : "—"}</span>
+          ${isEditingNote
+            ? `<input type="text" class="biz-note-input" data-sched-note-input="${noteKey}" value="${v.note ? v.note.replace(/"/g, '&quot;') : ''}" placeholder="Add a note..." autocomplete="off" />`
+            : (v.note ? `<span class="biz-note-preview">${v.note}</span>` : "")}
+        </div>
+        <div class="biz-details-actions">
+          <span class="biz-menu-link" data-sched-view-menu="${noteKey}"><span class="biz-icon">${ICON_FILE}</span>View menu</span>
+        </div>
+      </div>` : ""}
+    </div>`;
+  }).join("");
+
+  return `
+    <div class="card is-ready${isToday ? " card-today" : ""}" data-sched-card="${keyPrefix}">
+      <div class="card-top">
+        <div class="card-photographer">
+          <div class="avatar" style="background:${PHOTOGRAPHERS[card.photographer] || '#ccc'}"></div>
+          <div>
+            <span class="photographer-name">${card.photographer}</span>
+            <span style="color:var(--text-muted);font-weight:500;margin-left:8px;font-size:14px">${card.location}</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="color:${isToday ? '#b45309' : '#15803d'};font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px">
+            <span style="width:14px;height:14px;display:inline-flex">${isToday ? ICON_CLOCK : ICON_CHECK_CIRCLE}</span>${isToday ? "In Progress" : "Confirmed"}
+          </span>
+        </div>
+      </div>
+      <div class="biz-list">${venueRows}</div>
+      <div class="card-bottom">
+        <div class="assignee-wrap">
+          <span class="assignee-chip" style="color:${OWNER_TEXT_COLORS[card.owner] || OWNER_TEXT_COLORS.Alex}">${card.owner}</span>
+        </div>
+        <div class="btn-row">
+          ${isToday
+            ? `<button class="btn-sent" disabled title="Schedule already sent"><span style="width:13px;height:13px;display:inline-flex">${ICON_CHECK_CIRCLE}</span>Sent</button>`
+            : `<button class="btn-light${scheduleSentKeys.has(keyPrefix) ? " is-sent" : ""}${scheduleJustSentKey === keyPrefix ? " just-sent" : ""}" data-sched-send-schedule="${keyPrefix}" title="Send schedule to ${card.photographer}">${scheduleSentKeys.has(keyPrefix) ? `<span style="width:13px;height:13px;display:inline-flex">${ICON_CHECK_CIRCLE}</span>Sent` : "Send Schedule"}</button>`}
+          <button class="btn-danger" data-sched-edit="${keyPrefix}">Edit</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderScheduledView() {
+  const el = document.getElementById("scheduledTimeline");
+  el.innerHTML = SCHEDULED_CARDS.map((day, dateIdx) => {
+    const isToday = dateIdx === 0;
+    return `
+    <div class="day-row${isToday ? " day-row-today" : ""}">
+      <div class="day-label">
+        <div class="day-main">${isToday ? "Today" : day.date.split(", ")[1]}</div>
+        <div class="day-sub">${isToday ? "" : day.date.split(", ")[0]}</div>
+        <div class="dot-line"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="day-cards">${day.cards.map((card, cardIdx) => renderScheduledCard(card, `${dateIdx}:${cardIdx}`, isToday)).join("")}</div>
+    </div>`;
+  }).join("");
+  if (editingScheduledNoteKey) {
+    const input = el.querySelector(`[data-sched-note-input="${editingScheduledNoteKey}"]`);
+    if (input) { input.focus(); input.select(); }
+  }
+}
+renderScheduledView();
+
+document.getElementById("scheduledTimeline").addEventListener("click", (e) => {
+  const toggleBtn = e.target.closest("[data-sched-toggle-row]");
+  if (toggleBtn) {
+    const key = toggleBtn.dataset.schedToggleRow;
+    if (expandedScheduledRows.has(key)) expandedScheduledRows.delete(key);
+    else expandedScheduledRows.add(key);
+    renderScheduledView();
+    return;
+  }
+  const viewMenuBtn = e.target.closest("[data-sched-view-menu]");
+  if (viewMenuBtn) {
+    showToast("Viewing the menu isn't available in this prototype");
+    return;
+  }
+  const noteBtn = e.target.closest("[data-sched-note-btn]");
+  if (noteBtn) {
+    const key = noteBtn.dataset.schedNoteBtn;
+    expandedScheduledRows.add(key);
+    editingScheduledNoteKey = key;
+    renderScheduledView();
+    return;
+  }
+  const editBtn = e.target.closest("[data-sched-edit]");
+  if (editBtn) {
+    showToast("Editing a confirmed shoot isn't available in this prototype");
+    return;
+  }
+  const sendBtn = e.target.closest("[data-sched-send-schedule]");
+  if (sendBtn) {
+    const key = sendBtn.dataset.schedSendSchedule;
+    const [dateIdx, cardIdx] = key.split(":").map(Number);
+    const card = SCHEDULED_CARDS[dateIdx].cards[cardIdx];
+    openConfirm("send", key, `Send this schedule to ${card.photographer}?`, "Send");
+  }
+});
+
+function commitScheduledNote(input, revert) {
+  if (input.dataset.committed) return;
+  input.dataset.committed = "1";
+  const [dateIdx, cardIdx, vi] = input.dataset.schedNoteInput.split(":").map(Number);
+  if (!revert) {
+    SCHEDULED_CARDS[dateIdx].cards[cardIdx].venues[vi].note = input.value.trim();
+  }
+  editingScheduledNoteKey = null;
+  renderScheduledView();
+}
+
+document.getElementById("scheduledTimeline").addEventListener("focusout", (e) => {
+  const input = e.target.closest("[data-sched-note-input]");
+  if (!input) return;
+  commitScheduledNote(input, false);
+});
+
+document.getElementById("scheduledTimeline").addEventListener("keydown", (e) => {
+  const input = e.target.closest("[data-sched-note-input]");
+  if (!input) return;
+  if (e.key === "Enter") { e.preventDefault(); commitScheduledNote(input, false); }
+  if (e.key === "Escape") { e.preventDefault(); commitScheduledNote(input, true); }
+});
+
+function switchMainTab(tab) {
+  if (tab === "done") {
+    showToast("Photoshoot Done isn't built in this prototype");
+    return;
+  }
+  document.querySelectorAll(`.sub-item, .tab`).forEach(x => {
+    if (x.dataset.tab) x.classList.toggle("active", x.dataset.tab === tab);
+  });
+  const isScheduled = tab === "scheduled";
+  document.getElementById("timeline").style.display = isScheduled ? "none" : "";
+  document.getElementById("scheduledTimeline").style.display = isScheduled ? "" : "none";
+  document.getElementById("planningToolbar").style.display = isScheduled ? "none" : "";
+  document.getElementById("calendarPanel").style.display = isScheduled ? "none" : "";
+  document.getElementById("pageSubtitle").textContent = isScheduled
+    ? "Confirmed shoots, ready to go."
+    : "Venues being scheduled, from first contact to confirmed date.";
+}
+
+function dayNumToIndex(num) {
+  for (let i = 0; i < days.length; i++) {
+    const day = days[i];
+    if (day.label === "Tomorrow") { if (num === 17) return i; continue; }
+    const m = /^Nov (\d+)$/.exec(day.label);
+    if (m && Number(m[1]) === num) return i;
+  }
+  return -1;
+}
+
+document.getElementById("calendarGrid").addEventListener("click", (e) => {
+  const cell = e.target.closest(".cal-day");
+  if (!cell || !cell.dataset.calNum) return;
+  const dayIdx = dayNumToIndex(Number(cell.dataset.calNum));
+  if (dayIdx === -1) return;
+  const row = document.querySelector(`.day-row[data-day-idx="${dayIdx}"]`);
+  if (!row) { showToast("That day isn't in the current view"); return; }
+  row.scrollIntoView({ behavior: "smooth", block: "center" });
+  row.classList.add("flash-highlight");
+  setTimeout(() => row.classList.remove("flash-highlight"), 1200);
+});
+
+/* ---------------- Add-businesses panel ---------------- */
+
+// Pool of businesses ready to be scheduled (menu confirmed, awaiting a slot).
+const READY_BUSINESSES = [
+  { name: "Copper Grill", city: "Tel Aviv-Yafo", address: "14 Dizengoff St", contact: "Maayan Hermon", phone: "035550112", size: "S", dateAdded: "Oct 2", daysAgo: 22, menuStatus: "ready", type: "restaurant" },
+  { name: "Basil Grill", city: "Ramat Gan", address: "22 Bialik St", contact: "Tal Tzur", phone: "035550113", size: "L", dateAdded: "Oct 4", daysAgo: 20, menuStatus: "ready", type: "retail" },
+  { name: "Umber Grill", city: "Holon", address: "9 Sokolov St", contact: "Hadar Tzur", phone: "035550114", size: "M", dateAdded: "Oct 5", daysAgo: 19, menuStatus: "working", type: "restaurant" },
+  { name: "Saffron Bakery", city: "Herzliya", address: "3 HaBanim St", contact: "Itay Vardi", phone: "035550115", size: "S", dateAdded: "Oct 6", daysAgo: 18, menuStatus: "ready", type: "restaurant" },
+  { name: "Fig Bakery", city: "Jaffa", address: "17 Yefet St", contact: "Tamar Vardi", phone: "035550116", size: "M", dateAdded: "Oct 8", daysAgo: 16, menuStatus: "not_ready", type: "retail" },
+  { name: "Pebble Bakery", city: "Tel Aviv-Yafo", address: "41 Allenby St", contact: "Ben Lavi", phone: "035550117", size: "S", dateAdded: "Oct 9", daysAgo: 15, menuStatus: "working", type: "restaurant" },
+  { name: "Juniper Deli", city: "Ramat Gan", address: "6 Jabotinsky St", contact: "Yuval Lavi", phone: "035550118", size: "XL", dateAdded: "Oct 11", daysAgo: 13, menuStatus: "ready", type: "retail" },
+  { name: "Ivory Deli", city: "Bat Yam", address: "12 Balfour St", contact: "Omri Peretz-Mor", phone: "035550119", size: "M", dateAdded: "Oct 12", daysAgo: 12, menuStatus: "ready", type: "restaurant" },
+  { name: "Velvet Deli", city: "Tel Aviv-Yafo", address: "5 King George St", contact: "Avi Sela", phone: "035550120", size: "S", dateAdded: "Oct 13", daysAgo: 11, menuStatus: "ready", type: "restaurant" },
+  { name: "Thyme Deli", city: "Ramat Gan", address: "28 Arlozorov St", contact: "Ziv Sela", phone: "035550121", size: "S", dateAdded: "Oct 14", daysAgo: 10, menuStatus: "working", type: "restaurant" },
+  { name: "Olive Cantina", city: "Petah Tikva", address: "11 Hagalil St", contact: "Rina Dayan", phone: "035550122", size: "M", dateAdded: "Oct 14", daysAgo: 10, menuStatus: "ready", type: "retail" },
+  { name: "Cobalt Cantina", city: "Holon", address: "33 Weizmann St", contact: "Eli Dayan", phone: "035550123", size: "M", dateAdded: "Oct 15", daysAgo: 9, menuStatus: "ready", type: "restaurant" },
+  { name: "Orchid Cantina", city: "Herzliya", address: "7 Maskit St", contact: "Moran Gabay", phone: "035550124", size: "S", dateAdded: "Oct 16", daysAgo: 8, menuStatus: "working", type: "retail" },
+  { name: "Amber Social", city: "Rishon LeZion", address: "19 Herzl St", contact: "Roy Gabay", phone: "035550125", size: "L", dateAdded: "Oct 16", daysAgo: 8, menuStatus: "ready", type: "restaurant" },
+  { name: "Harbor Social", city: "Jaffa", address: "2 Olei Zion St", contact: "Lia Shani", phone: "035550126", size: "M", dateAdded: "Oct 17", daysAgo: 7, menuStatus: "not_ready", type: "restaurant" },
+  { name: "Sunset Social", city: "Tel Aviv-Yafo", address: "46 Levinsky St", contact: "Gil Shani", phone: "035550127", size: "L", dateAdded: "Oct 18", daysAgo: 6, menuStatus: "ready", type: "retail" },
+  { name: "Sage Social", city: "Ramat Gan", address: "22 Ben Gurion St", contact: "Shir Sharabi", phone: "035550128", size: "M", dateAdded: "Oct 18", daysAgo: 6, menuStatus: "ready", type: "restaurant" },
+  { name: "Maple Larder", city: "Bat Yam", address: "15 Ha'atzmaut Rd", contact: "Nitzan Sharabi", phone: "035550129", size: "S", dateAdded: "Oct 19", daysAgo: 5, menuStatus: "working", type: "retail" },
+  { name: "Willow Larder", city: "Petah Tikva", address: "8 Rothschild St", contact: "Noy Orenstein", phone: "035550130", size: "S", dateAdded: "Oct 20", daysAgo: 4, menuStatus: "ready", type: "restaurant" },
+  { name: "Cinder Larder", city: "Herzliya", address: "25 Sderot Hen", contact: "Dana Kedem", phone: "035550131", size: "M", dateAdded: "Oct 20", daysAgo: 4, menuStatus: "ready", type: "retail" },
+  { name: "Wren Larder", city: "Tel Aviv-Yafo", address: "9 Nahalat Binyamin St", contact: "Maayan Kedem", phone: "035550132", size: "S", dateAdded: "Oct 21", daysAgo: 3, menuStatus: "working", type: "restaurant" },
+  { name: "Clover Corner", city: "Holon", address: "4 Hankin St", contact: "Tal Bar-Lev", phone: "035550133", size: "M", dateAdded: "Oct 21", daysAgo: 3, menuStatus: "ready", type: "restaurant" },
+  { name: "Meadow Corner", city: "Rishon LeZion", address: "31 Jabotinsky St", contact: "Hadar Bar-Lev", phone: "035550134", size: "XL", dateAdded: "Oct 22", daysAgo: 2, menuStatus: "not_ready", type: "retail" },
+  { name: "Quince Corner", city: "Jaffa", address: "13 Yehuda Hayamit St", contact: "Itay Navon", phone: "035550135", size: "M", dateAdded: "Oct 22", daysAgo: 2, menuStatus: "ready", type: "restaurant" },
+  { name: "Lantern Market", city: "Ramat Gan", address: "16 Histadrut Blvd", contact: "Tamar Navon", phone: "035550136", size: "S", dateAdded: "Oct 23", daysAgo: 1, menuStatus: "working", type: "restaurant" },
+  { name: "Copper Market", city: "Tel Aviv-Yafo", address: "38 Ibn Gabirol St", contact: "Ben Ashkenazi", phone: "035550137", size: "L", dateAdded: "Oct 23", daysAgo: 1, menuStatus: "ready", type: "retail" },
+  { name: "Basil Market", city: "Ramat HaSharon", address: "12 Sokolov St", contact: "Yuval Ashkenazi", phone: "035550138", size: "M", dateAdded: "Oct 19", daysAgo: 5, menuStatus: "ready", type: "restaurant" },
+  { name: "Umber Market", city: "Ramat HaSharon", address: "7 Ahuza St", contact: "Omri Hermon", phone: "035550139", size: "S", dateAdded: "Oct 20", daysAgo: 4, menuStatus: "ready", type: "restaurant" },
+  { name: "Saffron House", city: "Ramat HaSharon", address: "21 Hamelacha St", contact: "Avi Tzur", phone: "035550140", size: "S", dateAdded: "Oct 21", daysAgo: 3, menuStatus: "working", type: "restaurant" },
+  { name: "Fig House", city: "Ramat HaSharon", address: "4 Hanadiv Blvd", contact: "Ziv Tzur", phone: "035550141", size: "M", dateAdded: "Oct 22", daysAgo: 2, menuStatus: "ready", type: "retail" },
+  { name: "Pebble House", city: "Ramat HaSharon", address: "30 Hatsionut St", contact: "Rina Vardi", phone: "035550142", size: "L", dateAdded: "Oct 22", daysAgo: 2, menuStatus: "ready", type: "restaurant" },
+  { name: "Juniper Table", city: "Ramat HaSharon", address: "9 Hayarkon St", contact: "Eli Vardi", phone: "035550143", size: "L", dateAdded: "Oct 23", daysAgo: 1, menuStatus: "not_ready", type: "retail" },
+  { name: "Ivory Table", city: "Ramat HaSharon", address: "15 Ahuza St", contact: "Moran Lavi", phone: "035550144", size: "S", dateAdded: "Oct 23", daysAgo: 1, menuStatus: "ready", type: "restaurant" },
+  { name: "Velvet Table", city: "Ramat HaSharon", address: "2 Haeshel St", contact: "Roy Lavi", phone: "035550145", size: "M", dateAdded: "Oct 23", daysAgo: 1, menuStatus: "ready", type: "restaurant" },
+  { name: "Thyme Table", city: "Ramat HaSharon", address: "18 Hanadiv Blvd", contact: "Lia Peretz-Mor", phone: "035550146", size: "XL", dateAdded: "Oct 24", daysAgo: 0, menuStatus: "working", type: "retail" },
+  { name: "Olive Kitchen", city: "Netanya", address: "6 Herzl St", contact: "Gil Peretz-Mor", phone: "035550147", size: "S", dateAdded: "Oct 21", daysAgo: 3, menuStatus: "ready", type: "restaurant" },
+  { name: "Cobalt Kitchen", city: "Netanya", address: "14 Smilansky St", contact: "Shir Sela", phone: "035550148", size: "M", dateAdded: "Oct 22", daysAgo: 2, menuStatus: "ready", type: "restaurant" },
+  { name: "Orchid Kitchen", city: "Pardes Hana", address: "5 HaMoshava St", contact: "Nitzan Sela", phone: "035550149", size: "M", dateAdded: "Oct 20", daysAgo: 4, menuStatus: "ready", type: "retail" },
+  { name: "Amber Bistro", city: "Pardes Hana", address: "11 Hatamar St", contact: "Noy Dayan", phone: "035550150", size: "S", dateAdded: "Oct 22", daysAgo: 2, menuStatus: "working", type: "restaurant" },
+  { name: "Harbor Bistro", city: "Hod HaSharon", address: "9 Sokolov St", contact: "Dana Gabay", phone: "035550151", size: "L", dateAdded: "Oct 21", daysAgo: 3, menuStatus: "ready", type: "restaurant" },
+  { name: "Sunset Bistro", city: "Hod HaSharon", address: "20 Hanassi St", contact: "Maayan Gabay", phone: "035550152", size: "S", dateAdded: "Oct 23", daysAgo: 1, menuStatus: "ready", type: "retail" },
+];
+
+let panelTarget = null; // { dayIdx, cardIdx }
+let panelSelection = new Set(); // indices into READY_BUSINESSES
+let panelBaseUsed = 0; // slots already used by businesses already on the target card
+let panelQuery = "";
+let panelQuickFilter = "all"; // all | nearby | ready | new
+let panelCityFilter = new Set(); // empty = no filter
+let panelCityMenuOpen = false;
+
+const panelOverlay = document.getElementById("panelOverlay");
+const panelTableBody = document.getElementById("panelTableBody");
+const panelSubtitle = document.getElementById("panelSubtitle");
+const progressText = document.getElementById("progressText");
+const progressFill = document.getElementById("progressFill");
+const panelSaveBtn = document.getElementById("panelSave");
+const panelSearchInput = document.getElementById("panelSearch");
+const panelQuickFiltersEl = document.getElementById("panelQuickFilters");
+
+function panelSlotsUsed() {
+  let sum = panelBaseUsed;
+  panelSelection.forEach(i => sum += SLOT_COST[READY_BUSINESSES[i].size] || 1);
+  return sum;
+}
+
+function renderPanelRow(i, used) {
+  const b = READY_BUSINESSES[i];
+  const selected = panelSelection.has(i);
+  const cost = SLOT_COST[b.size] || 1;
+  const wouldOverflow = !selected && (used + cost > MAX_SLOTS);
+  return `
+    <tr class="${selected ? 'row-selected' : ''} ${wouldOverflow ? 'row-disabled' : ''}" data-idx="${i}">
+      <td class="col-check"><input type="checkbox" ${selected ? 'checked' : ''} ${wouldOverflow ? 'disabled' : ''} /></td>
+      <td class="col-name">${b.name}</td>
+      <td>${b.address || "—"}</td>
+      <td>${b.city}</td>
+      <td><span class="size-badge ${b.size}">${b.size}</span></td>
+      <td>${b.dateAdded}</td>
+      <td><span class="status-pill" style="color:${MENU_BUILD_STATUS[b.menuStatus].color};background:${MENU_BUILD_STATUS[b.menuStatus].bg}">${MENU_BUILD_STATUS[b.menuStatus].label}</span></td>
+      <td><span class="biz-menu-link" data-view-menu-ready="${i}"><span class="biz-icon">${ICON_FILE}</span>View menu</span></td>
+    </tr>`;
+}
+
+function renderPanelTable() {
+  const used = panelSlotsUsed();
+  const targetLocation = panelTarget ? days[panelTarget.dayIdx].cards[panelTarget.cardIdx].location : null;
+  const q = panelQuery.trim().toLowerCase();
+
+  let indices = READY_BUSINESSES.map((_, i) => i).filter(i => {
+    const b = READY_BUSINESSES[i];
+    if (q && !b.name.toLowerCase().includes(q) && !b.city.toLowerCase().includes(q)) return false;
+    if (panelCityFilter.size && !panelCityFilter.has(b.city)) return false;
+    if (panelQuickFilter === "nearby") return !targetLocation || b.city === targetLocation;
+    if (panelQuickFilter === "ready") return b.menuStatus === "ready";
+    if (panelQuickFilter === "new") return b.daysAgo <= 5;
+    return true;
+  });
+
+  let html = "";
+  if (indices.length === 0) {
+    html = `<tr class="no-results-row"><td colspan="8">No venues match this search.</td></tr>`;
+  } else if (panelQuickFilter === "all" && targetLocation) {
+    const recommended = indices.filter(i => READY_BUSINESSES[i].city === targetLocation);
+    const rest = indices.filter(i => READY_BUSINESSES[i].city !== targetLocation);
+    if (recommended.length) {
+      html += `<tr class="divider-row"><td colspan="8">Recommended — near ${targetLocation}</td></tr>`;
+      html += recommended.map(i => renderPanelRow(i, used)).join("");
+    }
+    if (rest.length) {
+      html += `<tr class="divider-row"><td colspan="8">All waiting venues</td></tr>`;
+      html += rest.map(i => renderPanelRow(i, used)).join("");
+    }
+  } else {
+    html = indices.map(i => renderPanelRow(i, used)).join("");
+  }
+  panelTableBody.innerHTML = html;
+
+  progressText.textContent = `${used}/${MAX_SLOTS}`;
+  const pct = Math.min(100, (used / MAX_SLOTS) * 100);
+  progressFill.style.width = pct + "%";
+  progressFill.classList.toggle("full", used >= MAX_SLOTS);
+  panelSaveBtn.disabled = panelSelection.size === 0;
+}
+
+function openPanel(dayIdx, cardIdx) {
+  addMenuOpenKey = null;
+  panelTarget = { dayIdx, cardIdx };
+  panelSelection = new Set();
+  panelQuery = "";
+  panelQuickFilter = "nearby";
+  panelCityFilter = new Set();
+  document.getElementById("panelCityBadge").textContent = "";
+  if (panelSearchInput) panelSearchInput.value = "";
+  panelQuickFiltersEl.querySelectorAll(".quick-filter").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.quick === "nearby");
+  });
+  const c = days[dayIdx].cards[cardIdx];
+  panelBaseUsed = slotsUsed(c.businesses);
+  panelSubtitle.textContent = `${c.photographer} · ${days[dayIdx].label}, ${days[dayIdx].sub}`;
+  renderPanelTable();
+  panelOverlay.classList.add("open");
+}
+
+function closePanel() {
+  panelOverlay.classList.remove("open");
+  panelTarget = null;
+}
+
+panelTableBody.addEventListener("click", (e) => {
+  const menuLink = e.target.closest("[data-view-menu-ready]");
+  if (menuLink) {
+    showToast("Menu preview not available in this prototype");
+    return;
+  }
+  const row = e.target.closest("tr[data-idx]");
+  if (!row || row.classList.contains("row-disabled")) return;
+  const idx = Number(row.dataset.idx);
+  if (panelSelection.has(idx)) panelSelection.delete(idx);
+  else panelSelection.add(idx);
+  renderPanelTable();
+});
+
+document.getElementById("panelClose").addEventListener("click", closePanel);
+document.getElementById("panelCancel").addEventListener("click", closePanel);
+panelOverlay.addEventListener("click", (e) => {
+  if (e.target === panelOverlay) closePanel();
+});
+
+panelQuickFiltersEl.addEventListener("click", (e) => {
+  const btn = e.target.closest(".quick-filter");
+  if (!btn) return;
+  panelQuickFilter = btn.dataset.quick;
+  panelQuickFiltersEl.querySelectorAll(".quick-filter").forEach(b => b.classList.toggle("active", b === btn));
+  renderPanelTable();
+});
+
+function renderPanelCityMenu() {
+  const cities = Array.from(new Set(READY_BUSINESSES.map(b => b.city))).sort();
+  const menu = document.getElementById("panelCityFilterMenu");
+  menu.innerHTML = cities.map(city => `
+    <label>
+      <input type="checkbox" data-city-opt="${city}" ${panelCityFilter.has(city) ? "checked" : ""} />
+      ${city}
+    </label>
+  `).join("");
+}
+renderPanelCityMenu();
+
+document.getElementById("panelCityFilterBtn").addEventListener("click", (e) => {
+  e.stopPropagation();
+  panelCityMenuOpen = !panelCityMenuOpen;
+  document.getElementById("panelCityFilterMenu").classList.toggle("open", panelCityMenuOpen);
+});
+document.getElementById("panelCityFilterMenu").addEventListener("click", (e) => e.stopPropagation());
+document.getElementById("panelCityFilterMenu").addEventListener("change", (e) => {
+  const city = e.target.dataset.cityOpt;
+  if (!city) return;
+  if (e.target.checked) panelCityFilter.add(city); else panelCityFilter.delete(city);
+  document.getElementById("panelCityBadge").textContent = panelCityFilter.size ? String(panelCityFilter.size) : "";
+  renderPanelTable();
+});
+document.addEventListener("click", () => {
+  if (panelCityMenuOpen) {
+    panelCityMenuOpen = false;
+    document.getElementById("panelCityFilterMenu").classList.remove("open");
+  }
+});
+
+panelSearchInput.addEventListener("input", (e) => {
+  panelQuery = e.target.value;
+  renderPanelTable();
+});
+
+panelSaveBtn.addEventListener("click", () => {
+  if (!panelTarget || panelSelection.size === 0) return;
+  const { dayIdx, cardIdx } = panelTarget;
+  const chosen = Array.from(panelSelection).map(i => {
+    const b = READY_BUSINESSES[i];
+    return {
+      size: b.size,
+      time: "",
+      name: b.name,
+      cat: b.type,
+      phone: b.phone,
+      address: b.address,
+      contact: b.contact,
+      status: "Optional",
+      note: "",
+    };
+  });
+  const targetCard = days[dayIdx].cards[cardIdx];
+  targetCard.businesses = targetCard.businesses.concat(chosen);
+  if (!targetCard.location) targetCard.location = READY_BUSINESSES[Array.from(panelSelection)[0]].city;
+  closePanel();
+  render();
+});
+
+document.getElementById("timeline").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-open-panel]");
+  if (!btn) return;
+  const [dayIdx, cardIdx] = btn.dataset.openPanel.split(":").map(Number);
+  openPanel(dayIdx, cardIdx);
+});
+
+document.getElementById("timeline").addEventListener("click", (e) => {
+  const autoBtn = e.target.closest("[data-auto-add]");
+  if (autoBtn) {
+    const [dayIdx, cardIdx] = autoBtn.dataset.autoAdd.split(":").map(Number);
+    const targetCard = days[dayIdx].cards[cardIdx];
+    const candidate = pickAutoAddCandidate(targetCard);
+    if (!candidate) {
+      showToast("No fitting waiting venue to auto-add");
+      return;
+    }
+    targetCard.businesses.push({
+      size: candidate.size, time: "", name: candidate.name, cat: candidate.type,
+      phone: candidate.phone, address: candidate.address, contact: candidate.contact, status: "Optional", note: "",
+    });
+    if (!targetCard.location) targetCard.location = candidate.city;
+    addMenuOpenKey = null;
+    render();
+    showToast("Added " + candidate.name + " automatically");
+    return;
+  }
+
+});
+
+document.getElementById("timeline").addEventListener("change", (e) => {
+  const sel = e.target.closest("[data-status-change]");
+  if (sel) {
+    const [dayIdx, cardIdx, bizIdx] = sel.dataset.statusChange.split(":").map(Number);
+    const card = days[dayIdx].cards[cardIdx];
+    const wasReady = isCardAllClosed(card);
+    card.businesses[bizIdx].status = sel.value;
+    render();
+    if (!wasReady && isCardAllClosed(card)) {
+      const dayCardsEls = document.querySelectorAll(".day-cards");
+      const cardEl = dayCardsEls[dayIdx] && dayCardsEls[dayIdx].children[cardIdx];
+      const checkEl = cardEl && cardEl.querySelector(".ready-check");
+      if (checkEl) spawnConfetti(checkEl);
+    }
+    return;
+  }
+});
+
+document.getElementById("timeline").addEventListener("click", (e) => {
+  const noteBtn = e.target.closest("[data-note-btn]");
+  if (!noteBtn) return;
+  const key = noteBtn.dataset.noteBtn;
+  expandedRows.add(key);
+  editingNoteKey = key;
+  render();
+});
+
+function commitNoteEdit(input, revert) {
+  if (input.dataset.committed) return;
+  input.dataset.committed = "1";
+  const key = input.dataset.noteInput;
+  const [dayIdx, cardIdx, bizIdx] = key.split(":").map(Number);
+  const biz = days[dayIdx].cards[cardIdx].businesses[bizIdx];
+  if (!revert) biz.note = input.value.trim();
+  editingNoteKey = null;
+  render();
+}
+
+document.getElementById("timeline").addEventListener("focusout", (e) => {
+  const input = e.target.closest("[data-note-input]");
+  if (!input) return;
+  commitNoteEdit(input, false);
+});
+
+document.getElementById("timeline").addEventListener("keydown", (e) => {
+  const input = e.target.closest("[data-note-input]");
+  if (!input) return;
+  if (e.key === "Enter") { e.preventDefault(); commitNoteEdit(input, false); }
+  if (e.key === "Escape") { e.preventDefault(); commitNoteEdit(input, true); }
+});
+
+document.getElementById("timeline").addEventListener("click", (e) => {
+  const toggle = e.target.closest("[data-toggle-row]");
+  if (!toggle) return;
+  // Clicking an interactive control inside the row (status, note, time edit)
+  // should work on its own, not also flip the row open/closed.
+  if (e.target.closest(".status-select-wrap, [data-note-btn], [data-edit-time], input, select")) return;
+  const key = toggle.dataset.toggleRow;
+  if (expandedRows.has(key)) expandedRows.delete(key);
+  else expandedRows.add(key);
+  render();
+});
+
+document.getElementById("timeline").addEventListener("click", (e) => {
+  const timeEl = e.target.closest("[data-edit-time]");
+  if (!timeEl) return;
+  editingTimeKey = timeEl.dataset.editTime;
+  render();
+});
+
+// Typing digits into the time field auto-formats toward HH:MM as you go:
+// "10" -> "10:00", "103" -> "10:30" (each new digit fills the next HH:MM
+// slot; missing trailing slots default to 0 so the field always reads as
+// a complete, fixed-format time).
+function timeDigitsOnly(str) {
+  return str.replace(/\D/g, "").slice(0, 4);
+}
+function liveFormatTime(raw) {
+  const d = timeDigitsOnly(raw);
+  if (d.length === 0) return "";
+  if (d.length === 1) return d;
+  const hh = d.slice(0, 2);
+  if (d.length === 2) return hh + ":00";
+  if (d.length === 3) return hh + ":" + d[2] + "0";
+  return hh + ":" + d.slice(2, 4);
+}
+function finalizeTime(raw) {
+  const d = timeDigitsOnly(raw);
+  if (d.length === 0) return "";
+  const padded = (d + "0000").slice(0, 4);
+  return padded.slice(0, 2) + ":" + padded.slice(2, 4);
+}
+
+document.getElementById("timeline").addEventListener("input", (e) => {
+  const input = e.target.closest("[data-time-input]");
+  if (!input) return;
+  const formatted = liveFormatTime(input.value);
+  input.value = formatted;
+  const pos = formatted.length;
+  requestAnimationFrame(() => { try { input.setSelectionRange(pos, pos); } catch (err) {} });
+});
+
+function commitTimeEdit(input, revert) {
+  if (input.dataset.committed) return;
+  input.dataset.committed = "1";
+  const key = input.dataset.timeInput;
+  const [dayIdx, cardIdx, bizIdx] = key.split(":").map(Number);
+  const biz = days[dayIdx].cards[cardIdx].businesses[bizIdx];
+  if (!revert) {
+    const val = finalizeTime(input.value.trim());
+    if (val !== "") biz.time = val;
+  }
+  editingTimeKey = null;
+  render();
+}
+
+document.getElementById("timeline").addEventListener("focusout", (e) => {
+  const input = e.target.closest("[data-time-input]");
+  if (!input) return;
+  commitTimeEdit(input, false);
+});
+
+document.getElementById("timeline").addEventListener("keydown", (e) => {
+  const input = e.target.closest("[data-time-input]");
+  if (!input) return;
+  if (e.key === "Enter") { e.preventDefault(); commitTimeEdit(input, false); }
+  if (e.key === "Escape") { e.preventDefault(); commitTimeEdit(input, true); }
+});
+
+/* ---------------- Copy phone + toast ---------------- */
+let toastTimer = null;
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  document.getElementById("toastText").textContent = message;
+  toast.classList.add("show");
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2000);
+}
+
+/* ---------------- Generic confirm modal (send summary / delete row) ---------------- */
+
+let pendingConfirmAction = null; // { type: "summary" | "delete", key }
+
+const confirmOverlay = document.createElement("div");
+confirmOverlay.className = "confirm-overlay";
+confirmOverlay.innerHTML = `
+  <div class="confirm-box">
+    <p class="confirm-title">Are you sure?</p>
+    <p id="confirmSummaryText"></p>
+    <div class="confirm-btns">
+      <button type="button" class="btn-light" id="confirmSummaryNo">Cancel</button>
+      <button type="button" class="btn-move" id="confirmSummaryYes"></button>
+    </div>
+  </div>`;
+document.body.appendChild(confirmOverlay);
+const confirmTextEl = document.getElementById("confirmSummaryText");
+const confirmYesEl = document.getElementById("confirmSummaryYes");
+
+function openConfirm(type, key, text, confirmLabel) {
+  pendingConfirmAction = { type, key };
+  confirmTextEl.textContent = text;
+  confirmYesEl.textContent = confirmLabel;
+  confirmYesEl.className = type === "delete" ? "btn-confirm-danger" : type === "move" ? "btn-confirm-warn" : "btn-move";
+  confirmOverlay.classList.add("open");
+}
+
+function closeSummaryConfirm() {
+  confirmOverlay.classList.remove("open");
+  pendingConfirmAction = null;
+}
+
+confirmOverlay.addEventListener("click", (e) => {
+  if (e.target === confirmOverlay) closeSummaryConfirm();
+});
+document.getElementById("confirmSummaryNo").addEventListener("click", closeSummaryConfirm);
+confirmYesEl.addEventListener("click", () => {
+  if (pendingConfirmAction) {
+    const { type, key } = pendingConfirmAction;
+    const [dayIdx, cardIdx, bi] = key.split(":").map(Number);
+    if (type === "summary") {
+      const biz = days[dayIdx].cards[cardIdx].businesses[bi];
+      summarySentKeys.add(key);
+      showToast(`Conversation summary sent to ${biz.phone}`);
+      render();
+    } else if (type === "delete") {
+      deleteBusinessRow(key);
+    } else if (type === "move") {
+      moveCardToScheduled(dayIdx, cardIdx, null);
+    } else if (type === "send") {
+      const card = SCHEDULED_CARDS[dayIdx].cards[cardIdx];
+      scheduleSentKeys.add(key);
+      scheduleJustSentKey = key;
+      showToast(`Schedule sent to ${card.photographer}`);
+      renderScheduledView();
+      setTimeout(() => { scheduleJustSentKey = null; }, 700);
+    }
+  }
+  closeSummaryConfirm();
+});
+
+document.getElementById("timeline").addEventListener("click", (e) => {
+  const sendBtn = e.target.closest("[data-send-summary]");
+  if (sendBtn) {
+    const key = sendBtn.dataset.sendSummary;
+    if (summarySentKeys.has(key)) return;
+    openConfirm("summary", key, "Send the conversation summary to this venue's phone number?", "Send");
+    return;
+  }
+  const delBtn = e.target.closest("[data-delete-row]");
+  if (delBtn) {
+    const key = delBtn.dataset.deleteRow;
+    openConfirm("delete", key, "Remove this venue from the shoot? This can't be undone.", "Remove");
+  }
+});
+
+document.getElementById("timeline").addEventListener("click", (e) => {
+  const phoneEl = e.target.closest("[data-copy-phone]");
+  if (!phoneEl) return;
+  const phone = phoneEl.dataset.copyPhone;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(phone).catch(() => {});
+  }
+  showToast("Phone number copied");
+});
+
+document.getElementById("timeline").addEventListener("click", (e) => {
+  const menuEl = e.target.closest("[data-view-menu]");
+  if (!menuEl) return;
+  showToast("Menu preview not available in this prototype");
+});
+
+document.getElementById("timeline").addEventListener("click", (e) => {
+  const schedLink = e.target.closest("[data-view-scheduled]");
+  if (!schedLink) return;
+  switchMainTab("scheduled");
+  // This prototype's Scheduled data isn't actually linked to the moved
+  // Planning card, so we jump to today's first card as a stand-in target.
+  setTimeout(() => {
+    const card = document.querySelector('[data-sched-card="0:0"]');
+    if (!card) return;
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("flash-highlight");
+    setTimeout(() => card.classList.remove("flash-highlight"), 1200);
+  }, 50);
+});
+
+document.getElementById("timeline").addEventListener("click", (e) => {
+  const moveBtn = e.target.closest("[data-move-scheduled]");
+  if (!moveBtn) return;
+  const key = moveBtn.dataset.moveScheduled;
+  const [dayIdx, cardIdx] = key.split(":").map(Number);
+  if (!isCardAllClosed(days[dayIdx].cards[cardIdx])) {
+    openConfirm("move", key, "Are you sure you want to move this to Scheduled even though not all venues are closed?", "Move anyway");
+    return;
+  }
+  moveCardToScheduled(dayIdx, cardIdx, moveBtn.closest(".card"));
+});
+
+function moveCardToScheduled(dayIdx, cardIdx, cardEl) {
+  if (cardEl) {
+    cardEl.classList.add("card-leaving");
+    setTimeout(() => {
+      days[dayIdx].cards[cardIdx].movedToScheduled = true;
+      render();
+    }, 300);
+  } else {
+    days[dayIdx].cards[cardIdx].movedToScheduled = true;
+    render();
+  }
+}
+
+document.getElementById("timeline").addEventListener("click", (e) => {
+  const undoBtn = e.target.closest("[data-undo-move]");
+  if (!undoBtn) return;
+  const [dayIdx, cardIdx] = undoBtn.dataset.undoMove.split(":").map(Number);
+  days[dayIdx].cards[cardIdx].movedToScheduled = false;
+  render();
+  showToast("Restored to Planning");
+});
+
+function deleteBusinessRow(key) {
+  const [dayIdx, cardIdx, bizIdx] = key.split(":").map(Number);
+  const card = days[dayIdx].cards[cardIdx];
+  const [removed] = card.businesses.splice(bizIdx, 1);
+  // Later rows in this card just shifted index, so drop any row-level UI
+  // state for this card rather than risk it pointing at the wrong business.
+  expandedRows = new Set(Array.from(expandedRows).filter(k => !k.startsWith(`${dayIdx}:${cardIdx}:`)));
+  if (editingTimeKey && editingTimeKey.startsWith(`${dayIdx}:${cardIdx}:`)) editingTimeKey = null;
+  if (editingNoteKey && editingNoteKey.startsWith(`${dayIdx}:${cardIdx}:`)) editingNoteKey = null;
+  render();
+  if (removed) showToast("Removed " + removed.name);
+}
+
+/* ---------------- Minimal interactivity ---------------- */
+
+document.querySelectorAll(".sub-item, .tab").forEach(el => {
+  el.addEventListener("click", () => switchMainTab(el.dataset.tab));
+});
+
+document.querySelectorAll(".nav-item:not(.active-group)").forEach(el => {
+  el.addEventListener("click", () => {
+    const label = el.textContent.trim().replace(/[▾▴]$/, "").trim();
+    showToast(label + " isn't built in this prototype");
+  });
+});
+</script>
+
+
+
+</body>
+</html>

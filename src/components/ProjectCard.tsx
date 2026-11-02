@@ -7,6 +7,7 @@ interface ProjectCardProps {
   href: string
   cardColor: string
   textColor?: string
+  image?: string
   isPlaceholder?: boolean
 }
 
@@ -16,6 +17,7 @@ export default function ProjectCard({
   href,
   cardColor,
   textColor = '#FFFFFF',
+  image,
   isPlaceholder,
 }: ProjectCardProps) {
   const content = (
@@ -24,13 +26,25 @@ export default function ProjectCard({
       whileHover={isPlaceholder ? {} : { y: -6, boxShadow: '0 24px 64px rgba(26,26,24,0.14)' }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
     >
-      {/* Colour block with centred title */}
+      {/* Colour block (optionally over a screenshot) with centred title */}
       <div
-        className="relative flex items-center justify-center"
+        className="relative flex items-center justify-center overflow-hidden"
         style={{ aspectRatio: '16/9', background: cardColor }}
       >
+        {image && (
+          <>
+            <img
+              src={image}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover object-top"
+              loading="lazy"
+              decoding="async"
+            />
+            <div className="absolute inset-0" style={{ background: cardColor, opacity: 0.8 }} />
+          </>
+        )}
         <span
-          className="font-display font-normal select-none px-6 text-center leading-none"
+          className="relative font-display font-normal select-none px-6 text-center leading-none"
           style={{
             fontSize: 'clamp(2.5rem, 5vw, 5rem)',
             color: textColor,
@@ -39,7 +53,7 @@ export default function ProjectCard({
           {title}
         </span>
         {!isPlaceholder && (
-          <span className="absolute top-5 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-2xl" style={{ color: textColor }}>
+          <span className="absolute top-5 right-6 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-2xl" style={{ color: textColor }}>
             →
           </span>
         )}
